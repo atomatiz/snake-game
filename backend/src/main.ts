@@ -24,7 +24,7 @@ async function bootstrap() {
     const port: number = configService.get('PORT') || 3001;
     await app.listen(port, async () => {
         logger.log(
-            `Application is running -mode ${configService.get('NODE_ENV') || 'development'} -port ${port}`,
+            `Application is running -mode ${configService.get('NODE_ENV') || 'development'} -endpoint ${await app.getUrl()}`,
         );
     });
 }
