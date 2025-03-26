@@ -14,14 +14,14 @@ export class GameService {
 
     start(width: number, height: number): GameResponse {
         if (width < MIN_DIMENSION || height < MIN_DIMENSION) {
-            throw new Error('Width and height must be at least 5');
+            throw new Error('Width and Height must be at least 5');
         }
         this.width = width;
         this.height = height;
         this.snake = [
-            { x: 0, y: 0 },
-            { x: 1, y: 0 },
             { x: 2, y: 0 },
+            { x: 1, y: 0 },
+            { x: 0, y: 0 },
         ];
         this.direction = 'right';
         this.gameOver = false;
@@ -62,7 +62,8 @@ export class GameService {
         }
 
         if (direction) this.setDirection(direction);
-        const head = { ...this.snake[0] };
+
+        const head = { x: this.snake[0].x, y: this.snake[0].y };
         switch (this.direction) {
             case 'up':
                 head.y--;
@@ -80,9 +81,9 @@ export class GameService {
 
         if (
             head.x < 0 ||
-            head.x >= this.width ||
+            head.x > this.width - 1 ||
             head.y < 0 ||
-            head.y >= this.height
+            head.y > this.height - 1
         ) {
             this.gameOver = true;
             return {
@@ -108,7 +109,6 @@ export class GameService {
         }
 
         this.snake.unshift(head);
-
         const ateBait = head.x === this.bait.x && head.y === this.bait.y;
         if (ateBait) {
             this.bait = this.generateBait();
