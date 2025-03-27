@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { GameService } from '@game/game.service';
 import { Coordinate } from '@common/types/global';
 import { MIN_DIMENSION } from '@game/constants';
-import { GameService } from '@game/game.service';
 
 describe('GameService', () => {
     let service: GameService;
@@ -18,13 +18,13 @@ describe('GameService', () => {
         it('should throw an error if width is less than MIN_DIMENSION', () => {
             expect(() =>
                 service.start(MIN_DIMENSION - 1, MIN_DIMENSION),
-            ).toThrow('Width and height must be at least 5');
+            ).toThrow('Width and Height must be at least 5');
         });
 
         it('should throw an error if height is less than MIN_DIMENSION', () => {
             expect(() =>
                 service.start(MIN_DIMENSION, MIN_DIMENSION - 1),
-            ).toThrow('Width and height must be at least 5');
+            ).toThrow('Width and Height must be at least 5');
         });
 
         it('should initialize the game with correct values', () => {
@@ -33,9 +33,11 @@ describe('GameService', () => {
             const result = service.start(width, height);
 
             expect(result.snake).toHaveLength(3);
-            expect(result.snake[0]).toEqual({ x: 0, y: 0 });
-            expect(result.snake[1]).toEqual({ x: 1, y: 0 });
-            expect(result.snake[2]).toEqual({ x: 2, y: 0 });
+            expect(result.snake).toEqual([
+                { x: 2, y: 0 },
+                { x: 1, y: 0 },
+                { x: 0, y: 0 },
+            ]);
             expect(result.gameOver).toBe(false);
             expect(result.bait).toBeDefined();
             expect(result.bait.x).toBeGreaterThanOrEqual(0);
@@ -52,119 +54,134 @@ describe('GameService', () => {
 
         it('should return game over state if game is already over', () => {
             service['gameOver'] = true;
-            service['gameOver'] = true;
-
-            // Try to move
-            const result = service.move('right');
+            const result = service.move();
             expect(result.gameOver).toBe(true);
             expect(result.board).toBe('You lose');
         });
 
-        it('should move the snake in the specified direction', () => {
-            const initialHead = { ...service['snake'][0] };
+        it('should move the snake right by default', () => {
             const result = service.move();
-            expect(result.snake[0].x).toBe(initialHead.x);
-            expect(result.snake[0].y).toBe(initialHead.y);
+            expect(result.snake).toEqual([
+                { x: 3, y: 0 },
+                { x: 2, y: 0 },
+                { x: 1, y: 0 },
+            ]);
+            expect(result.gameOver).toBe(false);
         });
 
-        it('should change direction when a valid direction is provided', () => {
-            const initialHead = { ...service['snake'][0] };
-            const result = service.move('up');
-            expect(result.snake[0].x).toBe(initialHead.x);
-            expect(result.snake[0].y).toBe(initialHead.y);
+        it('should change direction and move accordingly', () => {
+            const result = service.move('down');
+            expect(result.snake).toEqual([
+                { x: 2, y: 1 },
+                { x: 2, y: 0 },
+                { x: 1, y: 0 },
+            ]);
+            expect(service['direction']).toBe('down');
+            expect(result.gameOver).toBe(false);
         });
 
-        it('should not change to opposite direction', () => {
-            const initialHead = { ...service['snake'][0] };
-            const result = service.move('left');
-            expect(result.snake[0].x).toBe(initialHead.x);
-            expect(result.snake[0].y).toBe(initialHead.y);
+        it('should not allow opposite direction change', () => {
+            const afterFirstMove = service.move();
+            expect(afterFirstMove.snake).toEqual([
+                { x: 3, y: 0 },
+                { x: 2, y: 0 },
+                { x: 1, y: 0 },
+            ]);
+            expect(service['direction']).toBe('right');
+
+            const afterAttemptedLeft = service.move('left');
+            expect(service['direction']).toBe('right');
+            expect(afterAttemptedLeft.snake).toEqual([
+                { x: 4, y: 0 },
+                { x: 3, y: 0 },
+                { x: 2, y: 0 },
+            ]);
+
+            const result = service.move();
+            expect(result.snake).toEqual([
+                { x: 5, y: 0 },
+                { x: 4, y: 0 },
+                { x: 3, y: 0 },
+            ]);
         });
 
         it('should end game when snake hits the border', () => {
             service['snake'] = [
-                { x: 9, y: 0 },
-                { x: 8, y: 0 },
-                { x: 7, y: 0 },
+                { x: 9, y: 5 },
+                { x: 8, y: 5 },
+                { x: 7, y: 5 },
             ];
-
+            service['direction'] = 'right';
             const result = service.move();
             expect(result.gameOver).toBe(true);
             expect(result.board).toBe('You lose');
+            expect(result.snake).toEqual([
+                { x: 9, y: 5 },
+                { x: 8, y: 5 },
+                { x: 7, y: 5 },
+            ]);
         });
 
         it('should end game when snake hits itself', () => {
             service['snake'] = [
-                { x: 3, y: 3 },
-                { x: 4, y: 3 },
-                { x: 4, y: 4 },
-                { x: 3, y: 4 },
-                { x: 2, y: 4 },
-                { x: 2, y: 3 },
+                { x: 7, y: 5 },
+                { x: 7, y: 6 },
+                { x: 8, y: 6 },
+                { x: 8, y: 5 },
             ];
-            service['direction'] = 'down';
-
-            const newHead = { x: 3, y: 4 };
-            const result = {
-                snake: service['snake'],
-                bait: service['bait'],
-                gameOver: true,
-                board: 'You lose',
-            };
-
+            service['direction'] = 'right';
+            const result = service.move();
             expect(result.gameOver).toBe(true);
             expect(result.board).toBe('You lose');
+            expect(result.snake).toEqual([
+                { x: 7, y: 5 },
+                { x: 7, y: 6 },
+                { x: 8, y: 6 },
+                { x: 8, y: 5 },
+            ]);
         });
 
-        it('should grow the snake when it eats the bait', () => {
+        it('should grow the snake and generate new bait when it eats the bait', () => {
             service['snake'] = [
                 { x: 2, y: 0 },
                 { x: 1, y: 0 },
                 { x: 0, y: 0 },
             ];
-            service['direction'] = 'right';
             service['bait'] = { x: 3, y: 0 };
+            service['direction'] = 'right';
 
-            const initialLength = service['snake'].length;
-
-            service['snake'].unshift({ x: 3, y: 0 });
-            service['bait'] = service['generateBait']();
-
-            expect(service['snake'].length).toBe(initialLength + 1);
-            expect(service['snake'][0]).toEqual({ x: 3, y: 0 });
+            const result = service.move();
+            expect(result.snake).toHaveLength(4);
+            expect(result.snake).toEqual([
+                { x: 3, y: 0 },
+                { x: 2, y: 0 },
+                { x: 1, y: 0 },
+                { x: 0, y: 0 },
+            ]);
+            expect(result.bait).not.toEqual({ x: 3, y: 0 });
+            expect(result.gameOver).toBe(false);
         });
 
         it('should end game with win when snake fills the board', () => {
-            const width = MIN_DIMENSION;
-            const height = MIN_DIMENSION;
+            const width = 5;
+            const height = 5;
             service.start(width, height);
 
             const snake: Coordinate[] = [];
-            const totalCells = width * height - 1;
-
-            for (let i = 0; i < totalCells; i++) {
-                snake.push({ x: Math.floor(i / height), y: i % height });
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    if (snake.length < width * height - 1) {
+                        snake.push({ x, y });
+                    }
+                }
             }
-
             service['snake'] = snake;
-            service['bait'] = {
-                x: Math.floor(totalCells / height),
-                y: totalCells % height,
-            };
+            service['bait'] = { x: 4, y: 4 };
+            service['direction'] = 'right';
+            service['snake'][0] = { x: 3, y: 4 };
 
-            service['snake'].unshift({
-                x: Math.floor(totalCells / height),
-                y: totalCells % height,
-            });
-
-            service['gameOver'] = true;
-            const result = {
-                snake: service['snake'],
-                bait: service['bait'],
-                gameOver: true,
-                board: 'You win',
-            };
-
+            const result = service.move();
+            expect(result.snake).toHaveLength(width * height);
             expect(result.gameOver).toBe(true);
             expect(result.board).toBe('You win');
         });
