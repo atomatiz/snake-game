@@ -1,6 +1,5 @@
 {
     "version": 2,
-
     "builds": [
         {
             "src": "dist/main.js",
@@ -8,6 +7,16 @@
         }
     ],
     "routes": [
+        {
+            "src": "/api/api-docs(.*)",
+            "dest": "dist/main.js",
+            "methods": ["GET"]
+        },
+        {
+            "src": "/api/game/(.*)",
+            "dest": "dist/main.js",
+            "methods": ["POST", "OPTIONS"]
+        },
         {
             "src": "/(.*)",
             "dest": "dist/main.js",
