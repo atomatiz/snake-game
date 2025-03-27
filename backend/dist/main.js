@@ -6,7 +6,6 @@ const config_1 = require("@nestjs/config");
 const core_1 = require("@nestjs/core");
 const swagger_1 = require("@nestjs/swagger");
 const app_module_1 = require("./app.module");
-const path_1 = require("path");
 async function bootstrap() {
     const logger = new common_1.Logger();
     const app = await core_1.NestFactory.create(app_module_1.AppModule, {
@@ -14,9 +13,11 @@ async function bootstrap() {
     });
     const configService = app.get(config_1.ConfigService);
     app.setGlobalPrefix(global_1.API_PREFIX);
-    app.useStaticAssets((0, path_1.join)(__dirname, '..', 'public', 'swagger-ui'), {
-        prefix: '/swagger-ui/',
-    });
+    app.useGlobalPipes(new common_1.ValidationPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+    }));
     app.enableCors({
         origin: [`${configService.get('SNACK_GAME_CLIENT_URL')}`],
         methods: ['POST', 'OPTIONS'],
@@ -33,7 +34,7 @@ async function bootstrap() {
             .addTag('Snack Game')
             .build();
         const document = swagger_1.SwaggerModule.createDocument(app, apiDocConfig);
-        swagger_1.SwaggerModule.setup(`${global_1.API_PREFIX}/api-docs`, app, document);
+        swagger_1.SwaggerModule.setup(`/api-docs`, app, document);
     }
     const port = configService.get('PORT') || 3001;
     await app.listen(port, async () => {

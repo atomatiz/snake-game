@@ -4,6 +4,10 @@ import React, { useState } from "react";
 import { Button } from "@/components/atoms/Button";
 import { Text } from "@/components/atoms/Text";
 import { Box } from "@/components/atoms/Box";
+import {
+  MAX_DIMENSION,
+  MIN_DIMENSION,
+} from "@/common/constants/game.constants";
 
 interface GameFormProps {
   onSubmit: (width: number, height: number) => void;
@@ -17,10 +21,15 @@ export const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
     e.preventDefault();
     const w = parseInt(width, 10);
     const h = parseInt(height, 10);
-    if (w >= 5 && h >= 5) {
+    if (
+      w >= MIN_DIMENSION &&
+      h >= MIN_DIMENSION &&
+      w <= MAX_DIMENSION &&
+      h <= MAX_DIMENSION
+    ) {
       onSubmit(w, h);
     } else {
-      alert("Width and height must be at least 5");
+      alert("Width and Height must be at least 5 and less than 25");
     }
   };
 

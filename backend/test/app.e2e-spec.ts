@@ -28,13 +28,11 @@ describe('AppController (e2e)', () => {
     });
 
     it('/game/move (POST)', async () => {
-        // First start a game
         const startResponse = await request(app.getHttpServer())
             .post('/game/start')
             .send({ width: 5, height: 5 })
             .expect(201);
 
-        // Then move the snake
         return request(app.getHttpServer())
             .post('/game/move')
             .send({ direction: 'right' })
@@ -43,8 +41,6 @@ describe('AppController (e2e)', () => {
                 expect(res.body.snake).toBeDefined();
                 expect(res.body.bait).toBeDefined();
                 expect(res.body.gameOver).toBeDefined();
-
-                // Check that the snake has moved
                 const head = res.body.snake[0];
                 expect(head).toBeDefined();
             });

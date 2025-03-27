@@ -1,11 +1,10 @@
 import { API_PREFIX } from '@common/constants/global';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
 
 async function bootstrap() {
     const logger: Logger = new Logger();
@@ -17,9 +16,13 @@ async function bootstrap() {
 
     app.setGlobalPrefix(API_PREFIX);
 
-    app.useStaticAssets(join(__dirname, '..', 'public', 'swagger-ui'), {
-        prefix: '/swagger-ui/',
-    });
+    app.useGlobalPipes(
+        new ValidationPipe({
+            transform: true,
+            whitelist: true,
+            forbidNonWhitelisted: true,
+        }),
+    );
 
     app.enableCors({
         origin: [`${configService.get('SNACK_GAME_CLIENT_URL')}`],
@@ -39,7 +42,7 @@ async function bootstrap() {
             .addTag('Snack Game')
             .build();
         const document = SwaggerModule.createDocument(app, apiDocConfig);
-        SwaggerModule.setup(`${API_PREFIX}/api-docs`, app, document);
+        SwaggerModule.setup(`/api-docs`, app, document);
     }
     const port: number = configService.get('PORT') || 3001;
     await app.listen(port, async () => {

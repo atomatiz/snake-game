@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const dtos_1 = require("./dtos");
 const game_service_1 = require("./game.service");
 let GameController = class GameController {
     gameService;
@@ -41,7 +42,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Invalid dimensions' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [dtos_1.StartDto]),
     __metadata("design:returntype", Object)
 ], GameController.prototype, "startGame", null);
 __decorate([

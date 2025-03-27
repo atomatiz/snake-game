@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GameService } from '@game/game.service';
 import { Coordinate } from '@common/types/global';
-import { MIN_DIMENSION } from '@game/constants';
+import { MAX_DIMENSION, MIN_DIMENSION } from '@game/constants';
 
 describe('GameService', () => {
     let service: GameService;
@@ -21,10 +21,22 @@ describe('GameService', () => {
             ).toThrow('Width and Height must be at least 5');
         });
 
+        it('should throw an error if width is greater than MAX_DIMENSION', () => {
+            expect(() =>
+                service.start(MAX_DIMENSION + 1, MAX_DIMENSION),
+            ).toThrow('Width and Height must be less than 25');
+        });
+
         it('should throw an error if height is less than MIN_DIMENSION', () => {
             expect(() =>
                 service.start(MIN_DIMENSION, MIN_DIMENSION - 1),
             ).toThrow('Width and Height must be at least 5');
+        });
+
+        it('should throw an error if height is greater than MAX_DIMENSION', () => {
+            expect(() =>
+                service.start(MAX_DIMENSION, MAX_DIMENSION + 1),
+            ).toThrow('Width and Height must be less than 25');
         });
 
         it('should initialize the game with correct values', () => {
@@ -163,8 +175,8 @@ describe('GameService', () => {
         });
 
         it('should end game with win when snake fills the board', () => {
-            const width = 5;
-            const height = 5;
+            const width = MIN_DIMENSION;
+            const height = MIN_DIMENSION;
             service.start(width, height);
 
             const snake: Coordinate[] = [];

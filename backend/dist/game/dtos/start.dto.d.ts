@@ -1,4 +1,4 @@
-export interface StartDto {
+export declare class StartDto {
     width: number;
     height: number;
 }
