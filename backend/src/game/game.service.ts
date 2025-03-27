@@ -1,6 +1,6 @@
 import { Coordinate } from '@common/types/global';
 import { Injectable } from '@nestjs/common';
-import { MIN_DIMENSION } from './constants';
+import { MAX_DIMENSION, MIN_DIMENSION } from './constants';
 import { DIRECTION, GameResponse } from './types';
 
 @Injectable()
@@ -13,8 +13,15 @@ export class GameService {
     private gameOver: boolean = true;
 
     start(width: number, height: number): GameResponse {
-        if (width < MIN_DIMENSION || height < MIN_DIMENSION) {
-            throw new Error('Width and Height must be at least 5');
+        if (
+            width < MIN_DIMENSION ||
+            height < MIN_DIMENSION ||
+            width > MAX_DIMENSION ||
+            height > MAX_DIMENSION
+        ) {
+            throw new Error(
+                'Width and Height must be at least 5 and maximum 25',
+            );
         }
         this.width = width;
         this.height = height;
