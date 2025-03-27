@@ -15,28 +15,12 @@ async function bootstrap() {
 
     app.setGlobalPrefix(API_PREFIX);
 
-    // app.use((req, res, next) => {
-    //     if (req.method === 'OPTIONS') {
-    //         res.status(200)
-    //             .header({
-    //                 'Access-Control-Allow-Origin': '*',
-    //                 'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    //                 'Access-Control-Allow-Headers':
-    //                     'Content-Type, Authorization, Accept',
-    //                 'Access-Control-Allow-Credentials': 'true',
-    //             })
-    //             .end();
-    //     } else {
-    //         next();
-    //     }
-    // });
-
-    // app.enableCors({
-    //     // origin: [`${configService.get('SNAKE_GAME_CLIENT_URL')}`],
-    //     methods: ['POST', 'OPTIONS'],
-    //     // credentials: true,
-    //     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    // });
+    app.enableCors({
+        origin: '*',
+        methods: ['POST', 'OPTIONS', 'GET'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+        credentials: true,
+    });
 
     const NODE_ENV = configService.get('NODE_ENV');
     const devEnvs = ['development', 'test', 'staging'];

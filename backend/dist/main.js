@@ -13,6 +13,12 @@ async function bootstrap() {
     });
     const configService = app.get(config_1.ConfigService);
     app.setGlobalPrefix(global_1.API_PREFIX);
+    app.enableCors({
+        origin: '*',
+        methods: ['POST', 'OPTIONS', 'GET'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+        credentials: true,
+    });
     const NODE_ENV = configService.get('NODE_ENV');
     const devEnvs = ['development', 'test', 'staging'];
     if (devEnvs.includes(NODE_ENV)) {
