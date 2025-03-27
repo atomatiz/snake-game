@@ -6,7 +6,7 @@ interface BoxProps<T extends ElementType> {
   as?: T;
   children?: React.ReactNode;
   className?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const Box = <T extends ElementType = "div">({
