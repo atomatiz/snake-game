@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import metadata from "@/common/constants/metadata.constants";
 import { QueryProvider } from "@/providers/QueryProvider";
+import "../styles/global.css";
 
 export default function RootLayout({
   children,
@@ -9,9 +10,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <script src="https://cdn.tailwindcss.com" async></script>
-      </head>
+      <head></head>
       <body>
         <QueryProvider>{children}</QueryProvider>
       </body>
