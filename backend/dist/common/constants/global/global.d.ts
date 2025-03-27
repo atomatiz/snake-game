@@ -1,1 +1,1 @@
-export declare const API_PREFIX = "/api";
+export declare const API_PREFIX = "/v1/api";

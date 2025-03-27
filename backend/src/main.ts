@@ -4,10 +4,12 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 async function bootstrap() {
     const logger: Logger = new Logger();
-    const app = await NestFactory.create(AppModule, {
+    const app = await NestFactory.create<NestExpressApplication>(AppModule, {
         logger: logger,
     });
 
@@ -15,9 +17,13 @@ async function bootstrap() {
 
     app.setGlobalPrefix(API_PREFIX);
 
+    app.useStaticAssets(join(__dirname, '..', 'public', 'swagger-ui'), {
+        prefix: '/swagger-ui/',
+    });
+
     app.enableCors({
-        origin: '*',
-        methods: ['POST', 'OPTIONS', 'GET'],
+        origin: [`${configService.get('SNACK_GAME_CLIENT_URL')}`],
+        methods: ['POST', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
         credentials: true,
     });
@@ -30,6 +36,7 @@ async function bootstrap() {
             .setTitle('Snake Game API')
             .setDescription('API for the Snake Game')
             .setVersion('1.0')
+            .addTag('Snack Game')
             .build();
         const document = SwaggerModule.createDocument(app, apiDocConfig);
         SwaggerModule.setup(`${API_PREFIX}/api-docs`, app, document);

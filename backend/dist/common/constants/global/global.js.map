@@ -1,1 +1,1 @@
-{"version":3,"file":"global.js","sourceRoot":"/","sources":["common/constants/global/global.ts"],"names":[],"mappings":";;;AAAa,QAAA,UAAU,GAAG,MAAM,CAAC","sourcesContent":["export const API_PREFIX = '/api';\n"]}
+{"version":3,"file":"global.js","sourceRoot":"/","sources":["common/constants/global/global.ts"],"names":[],"mappings":";;;AAAa,QAAA,UAAU,GAAG,SAAS,CAAC","sourcesContent":["export const API_PREFIX = '/v1/api';\n"]}
