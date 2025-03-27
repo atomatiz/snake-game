@@ -15,7 +15,7 @@ async function bootstrap() {
     app.setGlobalPrefix(API_PREFIX);
     const clientURL = process.env.SNAKE_GAME_CLIENT_URL;
     app.enableCors({
-        origin: [clientURL],
+        origin: ['*'],
         methods: ['POST', 'OPTIONS'],
         credentials: true,
         allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
