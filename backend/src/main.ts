@@ -1,5 +1,5 @@
 import { API_PREFIX } from '@common/constants/global';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -15,6 +15,14 @@ async function bootstrap() {
     const configService = app.get(ConfigService);
 
     app.setGlobalPrefix(API_PREFIX);
+
+    app.useGlobalPipes(
+        new ValidationPipe({
+            transform: true,
+            whitelist: true,
+            forbidNonWhitelisted: true,
+        }),
+    );
 
     app.enableCors({
         origin: [`${configService.get('SNACK_GAME_CLIENT_URL')}`],

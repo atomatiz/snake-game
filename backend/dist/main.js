@@ -13,6 +13,11 @@ async function bootstrap() {
     });
     const configService = app.get(config_1.ConfigService);
     app.setGlobalPrefix(global_1.API_PREFIX);
+    app.useGlobalPipes(new common_1.ValidationPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+    }));
     app.enableCors({
         origin: [`${configService.get('SNACK_GAME_CLIENT_URL')}`],
         methods: ['POST', 'OPTIONS'],
