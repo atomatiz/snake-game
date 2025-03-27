@@ -19,7 +19,7 @@ async function bootstrap() {
         forbidNonWhitelisted: true,
     }));
     app.enableCors({
-        origin: [`${configService.get('SNACK_GAME_CLIENT_URL')}`],
+        origin: ['*'],
         methods: ['POST', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
         credentials: true,
