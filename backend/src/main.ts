@@ -31,12 +31,12 @@ async function bootstrap() {
     //     }
     // });
 
-    app.enableCors({
-        // origin: [`${configService.get('SNAKE_GAME_CLIENT_URL')}`],
-        methods: ['POST', 'OPTIONS'],
-        // credentials: true,
-        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    });
+    // app.enableCors({
+    //     // origin: [`${configService.get('SNAKE_GAME_CLIENT_URL')}`],
+    //     methods: ['POST', 'OPTIONS'],
+    //     // credentials: true,
+    //     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    // });
 
     const NODE_ENV = configService.get('NODE_ENV');
     const devEnvs = ['development', 'test', 'staging'];
