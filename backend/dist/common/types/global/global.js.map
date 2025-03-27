@@ -1,0 +1,1 @@
+{"version":3,"file":"global.js","sourceRoot":"/","sources":["common/types/global/global.ts"],"names":[],"mappings":"","sourcesContent":["export interface Coordinate {\n    x: number;\n    y: number;\n}\n"]}
