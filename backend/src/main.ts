@@ -13,6 +13,12 @@ async function bootstrap() {
 
     const configService = app.get(ConfigService);
     app.setGlobalPrefix(API_PREFIX);
+    app.enableCors({
+        origin: 'http://localhost:3000',
+        methods: ['POST'],
+        credentials: true,
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    });
 
     const apiDocConfig = new DocumentBuilder()
         .setTitle('Snake Game API')
@@ -24,7 +30,7 @@ async function bootstrap() {
     const port: number = configService.get('PORT') || 3001;
     await app.listen(port, async () => {
         logger.log(
-            `Application is running -mode ${configService.get('NODE_ENV') || 'development'} -port ${port}`,
+            `Application is running -mode ${configService.get('NODE_ENV') || 'development'} -endpoint ${await app.getUrl()}`,
         );
     });
 }
