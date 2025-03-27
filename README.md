@@ -107,7 +107,7 @@ snake-game/
 - `POST /api/game/start` - Start a new game with specified dimensions
 - `POST /api/game/move` - Move the snake in a specified direction
 
-For detailed API documentation, visit http://localhost:3001/api-docs when the backend server is running.
+For detailed API documentation, visit http://localhost:3001/api/api-docs when the backend server is running.
 
 ## Development
 
