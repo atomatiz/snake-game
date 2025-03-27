@@ -81,7 +81,7 @@ snake-game/
    cd backend
    npm run start:dev or yarn start:dev
    ```
-   - The API will be available at http://localhost:3001 with API documentation at http://localhost:3001/api-docs
+   - The API will be available at http://localhost:3001/api with API documentation at http://localhost:3001/api/api-docs
    - The port is configurable in `src/main.ts`
 
 2. Start the frontend development server:

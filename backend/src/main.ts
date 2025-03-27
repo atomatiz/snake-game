@@ -20,13 +20,18 @@ async function bootstrap() {
         allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     });
 
-    const apiDocConfig = new DocumentBuilder()
-        .setTitle('Snake Game API')
-        .setDescription('API for the Snake Game')
-        .setVersion('1.0')
-        .build();
-    const document = SwaggerModule.createDocument(app, apiDocConfig);
-    SwaggerModule.setup('api-docs', app, document);
+    const NODE_ENV = configService.get('NODE_ENV');
+    const devEnvs = ['development', 'test', 'staging'];
+
+    if (devEnvs.includes(NODE_ENV)) {
+        const apiDocConfig = new DocumentBuilder()
+            .setTitle('Snake Game API')
+            .setDescription('API for the Snake Game')
+            .setVersion('1.0')
+            .build();
+        const document = SwaggerModule.createDocument(app, apiDocConfig);
+        SwaggerModule.setup(`${API_PREFIX}/api-docs`, app, document);
+    }
     const port: number = configService.get('PORT') || 3001;
     await app.listen(port, async () => {
         logger.log(
@@ -34,4 +39,7 @@ async function bootstrap() {
         );
     });
 }
-bootstrap();
+bootstrap().catch((err) => {
+    console.error('Failed to start application:', err);
+    process.exit(1);
+});
