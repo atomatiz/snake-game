@@ -33,7 +33,7 @@ async function bootstrap() {
             .addTag('Snack Game')
             .build();
         const document = swagger_1.SwaggerModule.createDocument(app, apiDocConfig);
-        swagger_1.SwaggerModule.setup(`${global_1.API_PREFIX}/api-docs`, app, document);
+        swagger_1.SwaggerModule.setup(`/api-docs`, app, document);
     }
     const port = configService.get('PORT') || 3001;
     await app.listen(port, async () => {
