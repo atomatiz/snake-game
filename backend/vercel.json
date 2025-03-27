@@ -1,16 +1,25 @@
 {
     "version": 2,
-
     "builds": [
         {
-            "src": "dist/main.js",
+            "src": "main.js",
             "use": "@vercel/node"
         }
     ],
     "routes": [
         {
+            "src": "/api/api-docs(.*)",
+            "dest": "main.js",
+            "methods": ["GET"]
+        },
+        {
+            "src": "/api/game/(.*)",
+            "dest": "main.js",
+            "methods": ["POST", "OPTIONS"]
+        },
+        {
             "src": "/(.*)",
-            "dest": "dist/main.js",
+            "dest": "main.js",
             "methods": ["GET", "POST", "OPTIONS"]
         }
     ]
