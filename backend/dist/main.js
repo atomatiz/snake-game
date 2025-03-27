@@ -15,17 +15,21 @@ async function bootstrap() {
     app.setGlobalPrefix(global_1.API_PREFIX);
     app.enableCors({
         origin: `${configService.get('SNAKE_GAME_CLIENT_URL')}`,
-        methods: ['GET', 'POST'],
+        methods: ['POST'],
         credentials: true,
         allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     });
-    const apiDocConfig = new swagger_1.DocumentBuilder()
-        .setTitle('Snake Game API')
-        .setDescription('API for the Snake Game')
-        .setVersion('1.0')
-        .build();
-    const document = swagger_1.SwaggerModule.createDocument(app, apiDocConfig);
-    swagger_1.SwaggerModule.setup(`${global_1.API_PREFIX}/api-docs`, app, document);
+    const NODE_ENV = configService.get('NODE_ENV');
+    const devEnvs = ['development', 'test', 'staging'];
+    if (devEnvs.includes(NODE_ENV)) {
+        const apiDocConfig = new swagger_1.DocumentBuilder()
+            .setTitle('Snake Game API')
+            .setDescription('API for the Snake Game')
+            .setVersion('1.0')
+            .build();
+        const document = swagger_1.SwaggerModule.createDocument(app, apiDocConfig);
+        swagger_1.SwaggerModule.setup(`${global_1.API_PREFIX}/api-docs`, app, document);
+    }
     const port = configService.get('PORT') || 3001;
     await app.listen(port, async () => {
         logger.log(`Application is running -mode ${configService.get('NODE_ENV') || 'development'} -endpoint ${await app.getUrl()}`);
