@@ -5,7 +5,6 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
 
 async function bootstrap() {
     const logger: Logger = new Logger();
@@ -16,10 +15,6 @@ async function bootstrap() {
     const configService = app.get(ConfigService);
 
     app.setGlobalPrefix(API_PREFIX);
-
-    app.useStaticAssets(join(__dirname, '..', 'public', 'swagger-ui'), {
-        prefix: '/swagger-ui/',
-    });
 
     app.enableCors({
         origin: [`${configService.get('SNACK_GAME_CLIENT_URL')}`],
