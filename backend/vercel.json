@@ -16,6 +16,11 @@
             "src": "/api/game/(.*)",
             "dest": "main.js",
             "methods": ["POST", "OPTIONS"]
+        },
+        {
+            "src": "/(.*)",
+            "dest": "main.js",
+            "methods": ["GET", "POST", "OPTIONS"]
         }
     ]
 }
