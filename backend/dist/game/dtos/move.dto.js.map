@@ -1,0 +1,1 @@
+{"version":3,"file":"move.dto.js","sourceRoot":"/","sources":["game/dtos/move.dto.ts"],"names":[],"mappings":"","sourcesContent":["export interface MoveDto {\n    direction?: 'up' | 'down' | 'left' | 'right';\n}\n"]}

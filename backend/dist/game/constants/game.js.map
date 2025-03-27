@@ -1,0 +1,1 @@
+{"version":3,"file":"game.js","sourceRoot":"/","sources":["game/constants/game.ts"],"names":[],"mappings":";;;AAAa,QAAA,aAAa,GAAG,CAAC,CAAC;AAClB,QAAA,UAAU,GAAG,CAAC,IAAI,EAAE,MAAM,EAAE,MAAM,EAAE,OAAO,CAAU,CAAC","sourcesContent":["export const MIN_DIMENSION = 5;\nexport const DIRECTIONS = ['up', 'down', 'left', 'right'] as const;\n"]}
