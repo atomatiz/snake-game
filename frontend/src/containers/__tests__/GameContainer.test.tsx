@@ -1,0 +1,104 @@
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { GameContainer } from "../GameContainer";
+import * as gameApi from "@/api/gameApi";
+
+jest.mock("@/components/game/GameForm", () => ({
+  GameForm: ({ onSubmit }: { onSubmit: (w: number, h: number) => void }) => (
+    <div>
+      <input data-testid="width-input" />
+      <input data-testid="height-input" />
+      <button onClick={() => onSubmit(10, 10)}>Start</button>
+    </div>
+  ),
+}));
+jest.mock("@/components/game/GameBoard", () => ({
+  GameBoard: ({
+    onReplay,
+    onNewGame,
+  }: {
+    onReplay: () => void;
+    onNewGame: () => void;
+  }) => (
+    <div>
+      <button onClick={onReplay}>Replay</button>
+      <button onClick={onNewGame}>New Game</button>
+    </div>
+  ),
+}));
+
+jest.mock("@/api/gameApi", () => ({
+  startGame: jest.fn(),
+}));
+
+jest.mock("@tanstack/react-query", () => ({
+  useQueryClient: () => ({
+    invalidateQueries: jest.fn(),
+  }),
+}));
+
+describe("GameContainer", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("renders GameForm when no game state exists", () => {
+    render(<GameContainer />);
+    expect(screen.getByTestId("width-input")).toBeInTheDocument();
+    expect(screen.getByText("Start")).toBeInTheDocument();
+  });
+
+  it("renders GameBoard after starting game", async () => {
+    (gameApi.startGame as jest.Mock).mockResolvedValue({
+      snake: [{ x: 2, y: 0 }],
+      bait: { x: 8, y: 6 },
+      gameOver: false,
+    });
+
+    render(<GameContainer />);
+    fireEvent.click(screen.getByText("Start"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Replay")).toBeInTheDocument();
+      expect(screen.getByText("New Game")).toBeInTheDocument();
+    });
+  });
+
+  it("replays game with same dimensions", async () => {
+    (gameApi.startGame as jest.Mock)
+      .mockResolvedValueOnce({
+        snake: [{ x: 2, y: 0 }],
+        bait: { x: 8, y: 6 },
+        gameOver: false,
+      })
+      .mockResolvedValueOnce({
+        snake: [{ x: 2, y: 0 }],
+        bait: { x: 5, y: 5 },
+        gameOver: false,
+      });
+
+    render(<GameContainer />);
+    fireEvent.click(screen.getByText("Start"));
+
+    await waitFor(() => {
+      fireEvent.click(screen.getByText("Replay"));
+      expect(gameApi.startGame).toHaveBeenCalledWith(10, 10, expect.anything());
+      expect(gameApi.startGame).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it("shows GameForm on New Game", async () => {
+    (gameApi.startGame as jest.Mock).mockResolvedValue({
+      snake: [{ x: 2, y: 0 }],
+      bait: { x: 8, y: 6 },
+      gameOver: false,
+    });
+
+    render(<GameContainer />);
+    fireEvent.click(screen.getByText("Start"));
+
+    await waitFor(() => {
+      fireEvent.click(screen.getByText("New Game"));
+      expect(screen.getByTestId("width-input")).toBeInTheDocument();
+    });
+  });
+});
