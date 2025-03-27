@@ -17,11 +17,13 @@ Snake Game is a web-based implementation of the classic Snake game where players
 ## Tech Stack
 
 ### Frontend
+
 - [Next.js](https://nextjs.org/) - React framework for building the UI
 - [React Query](https://tanstack.com/query) - Data fetching and state management
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
 
 ### Backend
+
 - [NestJS](https://nestjs.com/) - Progressive Node.js framework
 - [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript
 - [Swagger](https://swagger.io/) - API documentation
@@ -57,12 +59,14 @@ snake-game/
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/atomatiz/snake-game.git
    cd snake-game
    ```
 
 2. Install backend dependencies:
+
    ```bash
    cd backend
    npm install or yarn
@@ -77,11 +81,13 @@ snake-game/
 ### Running the Application
 
 1. Start the backend server:
+
    ```bash
    cd backend
    npm run start:dev or yarn start:dev
    ```
-   - The API will be available at http://localhost:3001/api with API documentation at http://localhost:3001/api/api-docs
+
+   - The API will be available at http://localhost:3001/v1/api with API documentation at http://localhost:3001/api-docs
    - The port is configurable in `src/main.ts`
 
 2. Start the frontend development server:
@@ -104,10 +110,10 @@ snake-game/
 
 ## API Endpoints
 
-- `POST /api/game/start` - Start a new game with specified dimensions
-- `POST /api/game/move` - Move the snake in a specified direction
+- `POST /v1/api/game/start` - Start a new game with specified dimensions
+- `POST /v1/api/game/move` - Move the snake in a specified direction
 
-For detailed API documentation, visit http://localhost:3001/api/api-docs when the backend server is running.
+For detailed API documentation, visit http://localhost:3001/api-docs when the backend server is running.
 
 ## Development
 
