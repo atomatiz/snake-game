@@ -14,7 +14,7 @@ async function bootstrap() {
     const configService = app.get(ConfigService);
     app.setGlobalPrefix(API_PREFIX);
     app.enableCors({
-        origin: 'http://localhost:3000',
+        origin: `${configService.get('SNAKE_GAME_CLIENT_URL')}`,
         methods: ['POST'],
         credentials: true,
         allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
