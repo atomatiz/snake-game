@@ -39,6 +39,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
   useEffect(() => {
     setLocalGameState(initialState);
+    setDirection(undefined);
+    setLastDirection(undefined);
+    setGameStarted(false);
+    setIsMoving(false);
   }, [initialState]);
 
   useEffect(() => {
@@ -75,7 +79,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       return;
     }
 
-    if (!gameStarted && !lastDirection) {
+    if (!gameStarted) {
       return;
     }
 
@@ -147,7 +151,17 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           <Text variant="h2" className="text-red-600">
             {gameState.board || "Game Over"}
           </Text>
-          <Button onClick={onReplay}>Replay</Button>
+          <Button
+            onClick={() => {
+              setDirection(undefined);
+              setLastDirection(undefined);
+              setGameStarted(false);
+              setIsMoving(false);
+              onReplay();
+            }}
+          >
+            Replay
+          </Button>
           <Button onClick={onNewGame}>New Game</Button>
         </Box>
       ) : (
