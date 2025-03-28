@@ -2,6 +2,8 @@
 
 A modern implementation of the classic Snake game with a full-stack architecture.
 
+- Play game at: https://atomatiz-snake-game.vercel.app
+
 ## Overview
 
 Snake Game is a web-based implementation of the classic Snake game where players control a snake to eat bait and grow longer without colliding with walls or itself. This project features a responsive frontend built with Next.js and a robust backend API powered by NestJS.
