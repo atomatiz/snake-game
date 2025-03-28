@@ -58,6 +58,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, []);
 
+  const [gameStarted, setGameStarted] = useState(false);
   const [lastDirection, setLastDirection] = useState<Direction | undefined>(
     undefined
   );
@@ -65,11 +66,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   useEffect(() => {
     if (direction) {
       setLastDirection(direction);
+      setGameStarted(true);
     }
   }, [direction]);
 
   useEffect(() => {
     if (gameState.gameOver) {
+      return;
+    }
+
+    if (!gameStarted && !lastDirection) {
       return;
     }
 
@@ -95,6 +101,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     queryClient,
     setGameState,
     moveInterval,
+    gameStarted,
   ]);
 
   const renderCell = (x: number, y: number) => {
