@@ -39,10 +39,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
   useEffect(() => {
     setLocalGameState(initialState);
-    setDirection(undefined);
-    setLastDirection(undefined);
-    setGameStarted(false);
-    setIsMoving(false);
   }, [initialState]);
 
   useEffect(() => {
