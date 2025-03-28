@@ -9,6 +9,8 @@ import {
   MIN_DIMENSION,
   MOVEMENT_DIFFICULTIES,
 } from "@/common/constants/game.constants";
+import { useAppDispatch } from "@/store/hooks";
+import { startGameAsync } from "@/store/slices/game.slice";
 
 interface GameFormProps {
   onSubmit: (width: number, height: number, moveInterval: number) => void;
@@ -18,6 +20,7 @@ export const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
   const [difficulty, setDifficulty] = useState("1000");
+  const dispatch = useAppDispatch();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +34,7 @@ export const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
       w <= MAX_DIMENSION &&
       h <= MAX_DIMENSION
     ) {
+      dispatch(startGameAsync({ width: w, height: h, moveInterval: interval }));
       onSubmit(w, h, interval);
     } else {
       alert("Width and Height must be at least 5 and less than 25");

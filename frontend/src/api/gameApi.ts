@@ -5,8 +5,12 @@ import { BASE_URL } from "@/common/constants/game.constants";
 export const startGame = (
   width: number,
   height: number,
+  moveInterval: number,
   queryClient: QueryClient
 ): Promise<GameResponse> => {
+  if (!moveInterval) {
+    throw new Error("Move interval is required");
+  }
   return queryClient.fetchQuery({
     queryKey: ["startGame", width, height],
     queryFn: async () => {

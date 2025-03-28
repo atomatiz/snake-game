@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import metadata from "@/common/constants/metadata.constants";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { ReduxProvider } from "@/providers/ReduxProvider";
 import "../styles/global.css";
 
 export default function RootLayout({
@@ -12,7 +13,9 @@ export default function RootLayout({
     <html lang="en">
       <head></head>
       <body>
-        <QueryProvider>{children}</QueryProvider>
+        <ReduxProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
