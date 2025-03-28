@@ -1,118 +1,159 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import React, { useEffect } from "react";
 import { Text } from "@/components/atoms/Text";
 import { Box } from "@/components/atoms/Box";
 import { Button } from "@/components/atoms/Button";
-import { moveSnake } from "@/api/gameApi";
-import { Coordinate, Direction, GameResponse } from "@/common/types/game.types";
-import { errorMessage } from "@/common/utils/error-message.util";
+import { Coordinate, Direction } from "@/common/types/game.types";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  moveSnakeAsync,
+  changeDirection,
+  setGameStarted,
+  setIsMoving,
+  setDirection
+} from "@/store/slices/game.slice";
+import { GameResponse } from "@/common/types/game.types";
 
 interface GameBoardProps {
   initialState: GameResponse;
   width: number;
   height: number;
   moveInterval: number;
-  setGameState: (state: GameResponse) => void;
   onReplay: () => void;
   onNewGame: () => void;
 }
 
 export const GameBoard: React.FC<GameBoardProps> = ({
-  initialState,
   width,
   height,
   moveInterval,
-  setGameState,
   onReplay,
   onNewGame,
 }) => {
-  const [gameState, setLocalGameState] = useState<GameResponse>(initialState);
-  const [direction, setDirection] = useState<Direction | undefined>(undefined);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [isMoving, setIsMoving] = useState(false);
-  const [lastDirection, setLastDirection] = useState<Direction | undefined>(
-    undefined
-  );
-  const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
+  const {
+    gameData: gameState,
+    direction,
+    lastDirection,
+    gameStarted,
+    isMoving,
+  } = useAppSelector((state) => state.game);
 
   useEffect(() => {
-    setLocalGameState(initialState);
-  }, [initialState]);
+    let lastKeyPressTime = 0;
+    const keyDebounceTime = 150;
 
-  useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      switch (event.key) {
-        case "ArrowUp":
-          setDirection("up");
-          break;
-        case "ArrowDown":
-          setDirection("down");
-          break;
-        case "ArrowLeft":
-          setDirection("left");
-          break;
-        case "ArrowRight":
-          setDirection("right");
-          break;
+      if (
+        ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)
+      ) {
+        event.preventDefault();
+        const now = Date.now();
+
+        if (now - lastKeyPressTime < keyDebounceTime) {
+          return;
+        }
+
+        lastKeyPressTime = now;
+
+        if (!gameState || gameState.gameOver || isMoving) {
+          return;
+        }
+
+        const currentDirection = lastDirection;
+        let newDirection: Direction | undefined;
+
+        switch (event.key) {
+          case "ArrowUp":
+            newDirection = "up";
+            break;
+          case "ArrowDown":
+            newDirection = "down";
+            break;
+          case "ArrowLeft":
+            newDirection = "left";
+            break;
+          case "ArrowRight":
+            newDirection = "right";
+            break;
+          default:
+            return;
+        }
+
+        if (
+          (currentDirection === "up" && newDirection === "down") ||
+          (currentDirection === "down" && newDirection === "up") ||
+          (currentDirection === "left" && newDirection === "right") ||
+          (currentDirection === "right" && newDirection === "left")
+        ) {
+          return;
+        }
+
+        dispatch(changeDirection(newDirection));
       }
     };
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, []);
+  }, [dispatch, gameState, lastDirection, isMoving]);
 
   useEffect(() => {
     if (direction) {
-      setLastDirection(direction);
-      setGameStarted(true);
+      dispatch(setGameStarted(true));
     }
-  }, [direction]);
+  }, [direction, dispatch]);
 
   useEffect(() => {
-    if (gameState.gameOver) {
+    if (!gameState || gameState.gameOver || !gameStarted) {
       return;
     }
 
-    if (!gameStarted) {
-      return;
-    }
+    let moveCount = 0;
+    const maxMovesPerSecond = 5;
 
     const handleMove = async () => {
       if (isMoving) return;
 
-      try {
-        setIsMoving(true);
-        const directionToUse = direction || lastDirection;
-        if (directionToUse) {
-          const newState = await moveSnake(directionToUse, queryClient);
-          setLocalGameState(newState);
-          setGameState(newState);
-          if (direction) setDirection(undefined);
+      moveCount++;
+
+      if (moveCount > maxMovesPerSecond) {
+        moveCount = 0;
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+
+      const directionToUse = direction || lastDirection;
+      if (directionToUse) {
+        dispatch(setIsMoving(true));
+        try {
+          await dispatch(moveSnakeAsync(directionToUse));
+        } finally {
+          dispatch(setIsMoving(false));
         }
-      } catch (error: unknown) {
-        console.error(errorMessage("Move failed:", error));
-      } finally {
-        setIsMoving(false);
       }
     };
 
     const moveIntervalId = setInterval(handleMove, moveInterval);
-
     return () => clearInterval(moveIntervalId);
   }, [
     gameState,
-    direction,
     lastDirection,
-    queryClient,
-    setGameState,
     moveInterval,
     gameStarted,
     isMoving,
+    direction,
+    dispatch,
   ]);
 
   const renderCell = (x: number, y: number) => {
+    if (!gameState)
+      return (
+        <Box
+          key={`${x}-${y}`}
+          className="w-8 h-8 border border-gray-300 bg-white"
+        />
+      );
+
     const isSnake = gameState.snake.some(
       (segment: Coordinate) => segment.x === x && segment.y === y
     );
@@ -140,17 +181,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const board = Array.from({ length: height }, (_, y) => renderRow(y));
 
   const handleReplay = () => {
-    setDirection(undefined);
-    setLastDirection(undefined);
-    setGameStarted(false);
-    setIsMoving(false);
+    dispatch(setDirection(undefined));
+    dispatch(setGameStarted(false));
+    dispatch(setIsMoving(false));
     onReplay();
   };
 
   return (
     <Box className="flex flex-col items-center">
       <Box className="flex flex-col">{board}</Box>
-      {gameState.gameOver ? (
+      {gameState && gameState.gameOver ? (
         <Box className="mt-4 flex flex-col items-center gap-2">
           <Text variant="h2" className="text-red-600">
             {gameState.board || "Game Over"}

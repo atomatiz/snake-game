@@ -1,65 +1,45 @@
 "use client";
 
-import React, { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import React from "react";
 import { GameBoard } from "@/components/game/GameBoard";
 import { GameForm } from "@/components/game/GameForm";
 import { GameInfo } from "@/components/game/GameInfo";
-import { startGame } from "@/api/gameApi";
-import { GameResponse } from "@/common/types/game.types";
-import { errorMessage } from "@/common/utils/error-message.util";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { startGameAsync, resetGame, newGame } from "@/store/slices/game.slice";
 
 export const GameContainer: React.FC = () => {
-  const [gameState, setGameState] = useState<GameResponse | null>(null);
-  const [width, setWidth] = useState<number | null>(null);
-  const [height, setHeight] = useState<number | null>(null);
-  const [moveInterval, setMoveInterval] = useState<number | null>(null);
+  const dispatch = useAppDispatch();
+  const { gameData, width, height, moveInterval } = useAppSelector(
+    (state) => state.game
+  );
 
-  const queryClient = useQueryClient();
-
-  const handleStartGame = async (w: number, h: number, interval: number) => {
-    try {
-      const initialState = await startGame(w, h, queryClient);
-      setWidth(w);
-      setHeight(h);
-      setMoveInterval(interval);
-      setGameState(initialState);
-    } catch (error: unknown) {
-      console.error(errorMessage("Failed to start game:", error));
-    }
+  const handleStartGame = (w: number, h: number, interval: number) => {
+    dispatch(startGameAsync({ width: w, height: h, moveInterval: interval }));
   };
 
-  const handleReplay = async () => {
+  const handleReplay = () => {
     if (width && height && moveInterval) {
-      try {
-        const initialState = await startGame(width, height, queryClient);
-        setGameState(initialState);
-      } catch (error: unknown) {
-        console.error(errorMessage("Failed to replay game:", error));
-      }
+      dispatch(resetGame());
+      dispatch(startGameAsync({ width, height, moveInterval }));
     }
   };
 
   const handleNewGame = () => {
-    setGameState(null);
-    setWidth(null);
-    setHeight(null);
-    setMoveInterval(null);
+    dispatch(newGame());
   };
 
   return (
     <>
-      {!gameState || !width || !height || !moveInterval ? (
+      {!gameData || !width || !height || !moveInterval ? (
         <GameForm onSubmit={handleStartGame} />
       ) : (
         <>
-          <GameInfo width={width} height={height} moveInterval={moveInterval} />
+          <GameInfo />
           <GameBoard
-            initialState={gameState}
+            initialState={gameData}
             width={width}
             height={height}
             moveInterval={moveInterval}
-            setGameState={setGameState}
             onReplay={handleReplay}
             onNewGame={handleNewGame}
           />

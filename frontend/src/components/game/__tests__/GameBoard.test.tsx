@@ -1,7 +1,26 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { screen, fireEvent } from "@testing-library/react";
 import { GameResponse } from "@/common/types/game.types";
 import { GameBoard } from "../GameBoard";
 import { MOVEMENT_DIFFICULTIES } from "@/common/constants/game.constants";
+import { renderWithProviders } from "@/common/utils/test-utils";
+
+const createPreloadedState = (
+  gameData: GameResponse,
+  moveInterval: number = MOVEMENT_DIFFICULTIES.MEDIUM
+) => ({
+  game: {
+    gameData,
+    gameStarted: true,
+    isMoving: false,
+    direction: undefined,
+    lastDirection: undefined,
+    width: 10,
+    height: 10,
+    moveInterval,
+    error: null,
+    loading: false,
+  },
+});
 
 jest.mock("@/api/gameApi", () => ({
   moveSnake: jest.fn(),
@@ -33,7 +52,6 @@ describe("GameBoard", () => {
     gameOver: true,
     board: "You lose",
   };
-  const mockSetGameState = jest.fn();
   const mockOnReplay = jest.fn();
   const mockOnNewGame = jest.fn();
   const defaultMoveInterval = MOVEMENT_DIFFICULTIES.MEDIUM;
@@ -48,16 +66,18 @@ describe("GameBoard", () => {
   });
 
   it("renders the game board with snake and bait", () => {
-    render(
+    renderWithProviders(
       <GameBoard
         initialState={initialState}
         width={10}
         height={10}
         moveInterval={defaultMoveInterval}
-        setGameState={mockSetGameState}
         onReplay={mockOnReplay}
         onNewGame={mockOnNewGame}
-      />
+      />,
+      {
+        preloadedState: createPreloadedState(initialState),
+      }
     );
 
     const snakeCell = screen.getByTestId("cell-2-0");
@@ -67,16 +87,18 @@ describe("GameBoard", () => {
   });
 
   it("displays game over with Replay and New Game buttons", () => {
-    render(
+    renderWithProviders(
       <GameBoard
         initialState={gameOverState}
         width={10}
         height={10}
         moveInterval={defaultMoveInterval}
-        setGameState={mockSetGameState}
         onReplay={mockOnReplay}
         onNewGame={mockOnNewGame}
-      />
+      />,
+      {
+        preloadedState: createPreloadedState(gameOverState),
+      }
     );
 
     expect(screen.getByText("You lose")).toBeInTheDocument();
@@ -85,16 +107,18 @@ describe("GameBoard", () => {
   });
 
   it("calls onReplay when Replay button is clicked", () => {
-    render(
+    renderWithProviders(
       <GameBoard
         initialState={gameOverState}
         width={10}
         height={10}
         moveInterval={defaultMoveInterval}
-        setGameState={mockSetGameState}
         onReplay={mockOnReplay}
         onNewGame={mockOnNewGame}
-      />
+      />,
+      {
+        preloadedState: createPreloadedState(gameOverState),
+      }
     );
 
     fireEvent.click(screen.getByText("Replay"));
@@ -102,16 +126,18 @@ describe("GameBoard", () => {
   });
 
   it("calls onNewGame when New Game button is clicked", () => {
-    render(
+    renderWithProviders(
       <GameBoard
         initialState={gameOverState}
         width={10}
         height={10}
         moveInterval={defaultMoveInterval}
-        setGameState={mockSetGameState}
         onReplay={mockOnReplay}
         onNewGame={mockOnNewGame}
-      />
+      />,
+      {
+        preloadedState: createPreloadedState(gameOverState),
+      }
     );
 
     fireEvent.click(screen.getByText("New Game"));
@@ -120,21 +146,22 @@ describe("GameBoard", () => {
 
   it("passes the correct move interval to the component", () => {
     const fastInterval = MOVEMENT_DIFFICULTIES.HARD;
-    render(
+    renderWithProviders(
       <GameBoard
         initialState={initialState}
         width={10}
         height={10}
         moveInterval={fastInterval}
-        setGameState={mockSetGameState}
         onReplay={mockOnReplay}
         onNewGame={mockOnNewGame}
-      />
+      />,
+      {
+        preloadedState: createPreloadedState(initialState, fastInterval),
+      }
     );
     const gameBoardElement = screen
       .getByTestId("cell-2-0")
       .closest("div[class*='flex flex-col']");
     expect(gameBoardElement).toBeInTheDocument();
-    expect(mockSetGameState).toBeDefined();
   });
 });

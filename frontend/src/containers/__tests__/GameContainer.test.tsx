@@ -1,9 +1,29 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { GameContainer } from "../GameContainer";
 import * as gameApi from "@/api/gameApi";
+import { renderWithProviders } from "@/common/utils/test-utils";
+
+const createInitialPreloadedState = () => ({
+  game: {
+    gameData: null,
+    gameStarted: false,
+    isMoving: false,
+    direction: undefined,
+    lastDirection: undefined,
+    width: null,
+    height: null,
+    moveInterval: null,
+    error: null,
+    loading: false,
+  },
+});
 
 jest.mock("@/components/game/GameForm", () => ({
-  GameForm: ({ onSubmit }: { onSubmit: (w: number, h: number, interval: number) => void }) => (
+  GameForm: ({
+    onSubmit,
+  }: {
+    onSubmit: (w: number, h: number, interval: number) => void;
+  }) => (
     <div>
       <input data-testid="width-input" />
       <input data-testid="height-input" />
@@ -50,7 +70,9 @@ describe("GameContainer", () => {
   });
 
   it("renders GameForm when no game state exists", () => {
-    render(<GameContainer />);
+    renderWithProviders(<GameContainer />, {
+      preloadedState: createInitialPreloadedState(),
+    });
     expect(screen.getByTestId("width-input")).toBeInTheDocument();
     expect(screen.getByText("Start")).toBeInTheDocument();
   });
@@ -62,13 +84,17 @@ describe("GameContainer", () => {
       gameOver: false,
     });
 
-    render(<GameContainer />);
-    fireEvent.click(screen.getByText("Start"));
-
-    await waitFor(() => {
-      expect(screen.getByText("Replay")).toBeInTheDocument();
-      expect(screen.getByText("New Game")).toBeInTheDocument();
+    renderWithProviders(<GameContainer />, {
+      preloadedState: createInitialPreloadedState(),
     });
+
+    fireEvent.click(screen.getByText("Start"));
+    await waitFor(
+      () => {
+        expect(screen.getByTestId("game-board")).toBeInTheDocument();
+      },
+      { timeout: 1000 }
+    );
   });
 
   it("replays game with same dimensions", async () => {
@@ -84,14 +110,26 @@ describe("GameContainer", () => {
         gameOver: false,
       });
 
-    render(<GameContainer />);
-    fireEvent.click(screen.getByText("Start"));
-
-    await waitFor(() => {
-      fireEvent.click(screen.getByText("Replay"));
-      expect(gameApi.startGame).toHaveBeenCalledWith(10, 10, expect.anything());
-      expect(gameApi.startGame).toHaveBeenCalledTimes(2);
+    renderWithProviders(<GameContainer />, {
+      preloadedState: createInitialPreloadedState(),
     });
+
+    fireEvent.click(screen.getByText("Start"));
+    await waitFor(
+      () => {
+        expect(screen.getByTestId("game-board")).toBeInTheDocument();
+      },
+      { timeout: 1000 }
+    );
+
+    fireEvent.click(screen.getByText("Replay"));
+    expect(gameApi.startGame).toHaveBeenCalledWith(
+      10,
+      10,
+      1000,
+      expect.anything()
+    );
+    expect(gameApi.startGame).toHaveBeenCalledTimes(2);
   });
 
   it("shows GameForm on New Game", async () => {
@@ -101,12 +139,19 @@ describe("GameContainer", () => {
       gameOver: false,
     });
 
-    render(<GameContainer />);
-    fireEvent.click(screen.getByText("Start"));
-
-    await waitFor(() => {
-      fireEvent.click(screen.getByText("New Game"));
-      expect(screen.getByTestId("width-input")).toBeInTheDocument();
+    renderWithProviders(<GameContainer />, {
+      preloadedState: createInitialPreloadedState(),
     });
+
+    fireEvent.click(screen.getByText("Start"));
+    await waitFor(
+      () => {
+        expect(screen.getByTestId("game-board")).toBeInTheDocument();
+      },
+      { timeout: 1000 }
+    );
+
+    fireEvent.click(screen.getByText("New Game"));
+    expect(screen.getByTestId("width-input")).toBeInTheDocument();
   });
 });
