@@ -14,6 +14,26 @@ import {
 } from "@/common/constants/game.constants";
 import { useAppDispatch } from "@/store/hooks";
 import { startGameAsync } from "@/store/slices/game.slice";
+import { z } from "zod";
+
+const gameSettingsSchema = z.object({
+  width: z.coerce
+    .number()
+    .int()
+    .min(MIN_DIMENSION, `Width must be at least ${MIN_DIMENSION}`)
+    .max(MAX_DIMENSION, `Width must be at most ${MAX_DIMENSION}`),
+  height: z.coerce
+    .number()
+    .int()
+    .min(MIN_DIMENSION, `Height must be at least ${MIN_DIMENSION}`)
+    .max(MAX_DIMENSION, `Height must be at most ${MAX_DIMENSION}`),
+  moveInterval: z.coerce
+    .number()
+    .int()
+    .positive("Move interval must be positive"),
+});
+
+type GameSettings = z.infer<typeof gameSettingsSchema>;
 
 interface GameFormProps {
   onSubmit: (width: number, height: number, moveInterval: number) => void;
@@ -32,23 +52,36 @@ export const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
     e.preventDefault();
     setError(null);
 
-    const w = parseInt(width, 10);
-    const h = parseInt(height, 10);
-    const interval = parseInt(difficulty, 10);
+    try {
+      const validatedData = gameSettingsSchema.parse({
+        width,
+        height,
+        moveInterval: difficulty,
+      });
+      const settings: GameSettings = validatedData;
+      dispatch(
+        startGameAsync({
+          width: settings.width,
+          height: settings.height,
+          moveInterval: settings.moveInterval,
+        })
+      );
+      onSubmit(
+        validatedData.width,
+        validatedData.height,
+        validatedData.moveInterval
+      );
+    } catch (err: unknown) {
+      if (err instanceof z.ZodError) {
+        const errorMessage = err.errors.map((e) => e.message).join(" - ");
+        setError(errorMessage);
+      } else {
+        setError(`Width and Height must be filled to start the game`);
+      }
 
-    if (
-      w >= MIN_DIMENSION &&
-      h >= MIN_DIMENSION &&
-      w <= MAX_DIMENSION &&
-      h <= MAX_DIMENSION
-    ) {
-      dispatch(startGameAsync({ width: w, height: h, moveInterval: interval }));
-      onSubmit(w, h, interval);
-    } else {
-      setError(`Width and Height must be filled to start the game`);
       setTimeout(() => {
         setError(null);
-      }, 30000);
+      }, 10000);
     }
   };
 
