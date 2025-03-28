@@ -1,6 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 import { GameResponse, Direction } from "@/common/types/game.types";
 import { BASE_URL } from "@/common/constants/game.constants";
+import { Nullable } from "@/common/types/global.types";
 
 export const startGame = (
   width: number,
@@ -32,7 +33,7 @@ export const startGame = (
 };
 
 export const moveSnake = (
-  direction: Direction | undefined,
+  direction: Nullable<Direction>,
   queryClient: QueryClient
 ): Promise<GameResponse> => {
   return queryClient.fetchQuery({

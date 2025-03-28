@@ -6,11 +6,12 @@ import {
   ButtonProps as MuiButtonProps,
 } from "@mui/material";
 import { cn } from "@/common/utils/tailwind.util";
+import { Nullable } from "@/common/types/global.types";
 
 type ButtonVariant = "primary" | "secondary" | "danger" | "success" | "warning";
 
 export type ButtonProps = Omit<MuiButtonProps, "variant"> & {
-  variant?: ButtonVariant;
+  variant?: Nullable<ButtonVariant>;
   className?: string;
 };
 
