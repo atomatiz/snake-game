@@ -42,13 +42,13 @@ export const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
       <Text variant="h2" className="text-center">
         Enter Matrix Dimensions
       </Text>
-      <Box className="flex gap-2">
+      <Box className="flex w-full gap-2">
         <input
           type="number"
           value={width}
           onChange={(e) => setWidth(e.target.value)}
           placeholder="Width"
-          className="border p-2 rounded"
+          className="border p-2 rounded w-full"
           min="5"
           max="25"
         />
@@ -57,7 +57,7 @@ export const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
           value={height}
           onChange={(e) => setHeight(e.target.value)}
           placeholder="Height"
-          className="border p-2 rounded"
+          className="border p-2 rounded w-full"
           min="5"
           max="25"
         />
