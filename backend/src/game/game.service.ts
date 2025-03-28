@@ -13,15 +13,12 @@ export class GameService {
     private gameOver: boolean = true;
 
     start(width: number, height: number): GameResponse {
-        if (
-            width < MIN_DIMENSION ||
-            height < MIN_DIMENSION ||
-            width > MAX_DIMENSION ||
-            height > MAX_DIMENSION
-        ) {
-            throw new Error(
-                'Width and Height must be at least 5 and maximum 25',
-            );
+        if (width < MIN_DIMENSION || height < MIN_DIMENSION) {
+            throw new Error('Width and Height must be at least 5');
+        }
+
+        if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+            throw new Error('Width and Height must be at most 25');
         }
         this.width = width;
         this.height = height;
