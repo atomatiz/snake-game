@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { Text } from "@/components/atoms/Text";
 import { Box } from "@/components/atoms/Box";
 import { Button } from "@/components/atoms/Button";
 import { Coordinate, Direction } from "@/common/types/game.types";
@@ -11,7 +10,7 @@ import {
   changeDirection,
   setGameStarted,
   setIsMoving,
-  setDirection
+  setDirection,
 } from "@/store/slices/game.slice";
 import { GameResponse } from "@/common/types/game.types";
 
@@ -150,7 +149,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       return (
         <Box
           key={`${x}-${y}`}
-          className="w-8 h-8 border border-gray-300 bg-white"
+          className="w-8 h-8 border border-gray-300 bg-white rounded-sm"
         />
       );
 
@@ -158,12 +157,24 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       (segment: Coordinate) => segment.x === x && segment.y === y
     );
     const isBait = gameState.bait.x === x && gameState.bait.y === y;
+
+    const isSnakeHead =
+      gameState.snake.length > 0 &&
+      gameState.snake[0].x === x &&
+      gameState.snake[0].y === y;
+
     return (
       <Box
         key={`${x}-${y}`}
         data-testid={`cell-${x}-${y}`}
-        className={`w-8 h-8 border border-gray-300 ${
-          isSnake ? "bg-green-500" : isBait ? "bg-red-500" : "bg-white"
+        className={`w-8 h-8 border border-gray-300 rounded-sm transition-colors duration-100 ${
+          isSnakeHead
+            ? "bg-green-700 shadow-inner"
+            : isSnake
+            ? "bg-green-500"
+            : isBait
+            ? "bg-red-500 animate-pulse"
+            : "bg-white hover:bg-gray-100"
         }`}
       />
     );
@@ -189,21 +200,21 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
   return (
     <Box className="flex flex-col items-center">
-      <Box className="flex flex-col">{board}</Box>
+      <Box className="flex flex-col border-4 border-gray-800 rounded shadow-lg p-1 bg-gray-100">
+        {board}
+      </Box>
       {gameState && gameState.gameOver ? (
         <Box className="mt-4 flex flex-col items-center gap-2">
-          <Text variant="h2" className="text-red-600">
-            {gameState.board || "Game Over"}
-          </Text>
-          <Button onClick={handleReplay}>Replay</Button>
-          <Button onClick={onNewGame}>New Game</Button>
+          <Button variant="warning" onClick={handleReplay}>
+            Replay
+          </Button>
+          <Button variant="success" onClick={onNewGame}>
+            New Game
+          </Button>
         </Box>
       ) : (
         <Box className="mt-4 flex flex-col items-center gap-2">
-          <Button
-            onClick={onNewGame}
-            className="bg-red-600 text-white hover:bg-red-700"
-          >
+          <Button variant="danger" onClick={onNewGame}>
             Exit Game
           </Button>
         </Box>

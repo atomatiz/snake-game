@@ -1,25 +1,27 @@
+"use client";
+
 import React from "react";
+import { Box as MuiBox, BoxProps as MuiBoxProps } from "@mui/material";
+import { cn } from "@/common/utils/tailwind.util";
 
 type ElementType = keyof React.JSX.IntrinsicElements;
 
-interface BoxProps<T extends ElementType> {
-  as?: T;
-  children?: React.ReactNode;
+export type BoxProps = MuiBoxProps & {
+  as?: ElementType;
   className?: string;
-  [key: string]: unknown;
-}
+};
 
-export const Box = <T extends ElementType = "div">({
+export const Box: React.FC<BoxProps> = ({
   as,
   children,
-  className = "",
+  className,
   ...rest
-}: BoxProps<T> &
-  Omit<React.ComponentPropsWithoutRef<T>, keyof BoxProps<T>>) => {
-  const Component = (as ?? "div") as React.ElementType;
+}) => {
+  const componentProp = as ? { component: as as React.ElementType } : {};
+
   return (
-    <Component className={className} {...rest}>
+    <MuiBox {...componentProp} className={cn(className)} {...rest}>
       {children}
-    </Component>
+    </MuiBox>
   );
 };

@@ -1,4 +1,4 @@
-import { screen, fireEvent, waitFor } from "@testing-library/react";
+import { screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { GameContainer } from "../GameContainer";
 import * as gameApi from "@/api/gameApi";
 import { renderWithProviders } from "@/common/utils/test-utils";
@@ -88,7 +88,10 @@ describe("GameContainer", () => {
       preloadedState: createInitialPreloadedState(),
     });
 
-    fireEvent.click(screen.getByText("Start"));
+    await act(async () => {
+      fireEvent.click(screen.getByText("Start"));
+    });
+    
     await waitFor(
       () => {
         expect(screen.getByTestId("game-board")).toBeInTheDocument();
@@ -114,7 +117,10 @@ describe("GameContainer", () => {
       preloadedState: createInitialPreloadedState(),
     });
 
-    fireEvent.click(screen.getByText("Start"));
+    await act(async () => {
+      fireEvent.click(screen.getByText("Start"));
+    });
+    
     await waitFor(
       () => {
         expect(screen.getByTestId("game-board")).toBeInTheDocument();
@@ -122,7 +128,10 @@ describe("GameContainer", () => {
       { timeout: 1000 }
     );
 
-    fireEvent.click(screen.getByText("Replay"));
+    await act(async () => {
+      fireEvent.click(screen.getByText("Replay"));
+    });
+    
     expect(gameApi.startGame).toHaveBeenCalledWith(
       10,
       10,
@@ -143,7 +152,10 @@ describe("GameContainer", () => {
       preloadedState: createInitialPreloadedState(),
     });
 
-    fireEvent.click(screen.getByText("Start"));
+    await act(async () => {
+      fireEvent.click(screen.getByText("Start"));
+    });
+    
     await waitFor(
       () => {
         expect(screen.getByTestId("game-board")).toBeInTheDocument();
@@ -151,7 +163,10 @@ describe("GameContainer", () => {
       { timeout: 1000 }
     );
 
-    fireEvent.click(screen.getByText("New Game"));
+    await act(async () => {
+      fireEvent.click(screen.getByText("New Game"));
+    });
+    
     expect(screen.getByTestId("width-input")).toBeInTheDocument();
   });
 });

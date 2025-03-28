@@ -21,8 +21,10 @@ Snake Game is a web-based implementation of the classic Snake game where players
 ### Frontend
 
 - [Next.js](https://nextjs.org/) - React framework for building the UI
+- [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript
 - [Redux](https://redux.js.org/) & [Redux Toolkit](https://redux-toolkit.js.org/) - State management
 - [React Query](https://tanstack.com/query) - Data fetching
+- [Material UI](https://mui.com/) - React component library implementing Material Design
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
 
 ### Backend
@@ -36,6 +38,7 @@ Snake Game is a web-based implementation of the classic Snake game where players
 ### Prerequisites
 
 - Node.js (v22 or higher)
+- NPM (v11 or higher)
 - npm or yarn
 
 ### Installation

@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import { Button } from "@/components/atoms/Button";
 import { Text } from "@/components/atoms/Text";
 import { Box } from "@/components/atoms/Box";
+import { Input } from "@/components/atoms/Input";
+import { Selection } from "@/components/atoms/Selection";
+import { Alert } from "@/components/atoms/Alert";
 import {
   MAX_DIMENSION,
   MIN_DIMENSION,
@@ -17,13 +20,18 @@ interface GameFormProps {
 }
 
 export const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
-  const [width, setWidth] = useState("");
-  const [height, setHeight] = useState("");
-  const [difficulty, setDifficulty] = useState("1000");
+  const [width, setWidth] = useState(MIN_DIMENSION.toString());
+  const [height, setHeight] = useState(MIN_DIMENSION.toString());
+  const [difficulty, setDifficulty] = useState(
+    MOVEMENT_DIFFICULTIES.EASY.toString()
+  );
+  const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
     const w = parseInt(width, 10);
     const h = parseInt(height, 10);
     const interval = parseInt(difficulty, 10);
@@ -37,9 +45,24 @@ export const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
       dispatch(startGameAsync({ width: w, height: h, moveInterval: interval }));
       onSubmit(w, h, interval);
     } else {
-      alert("Width and Height must be at least 5 and less than 25");
+      setError(`Width and Height must be filled to start the game`);
+      setTimeout(() => {
+        setError(null);
+      }, 30000);
     }
   };
+
+  const difficultyOptions = [
+    {
+      value: MOVEMENT_DIFFICULTIES.HARD.toString(),
+      label: "Hard (1/2 second)",
+    },
+    {
+      value: MOVEMENT_DIFFICULTIES.MEDIUM.toString(),
+      label: "Medium (2/3 second)",
+    },
+    { value: MOVEMENT_DIFFICULTIES.EASY.toString(), label: "Easy (1 second)" },
+  ];
 
   return (
     <Box
@@ -47,46 +70,58 @@ export const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
       onSubmit={handleSubmit}
       className="flex flex-col items-center gap-4"
     >
-      <Text variant="h2" className="text-center">
+      <Text variant="h5" className="text-center">
         Enter Matrix Dimensions
       </Text>
       <Box className="flex w-full gap-2">
-        <input
+        <Input
           type="number"
           value={width}
           onChange={(e) => setWidth(e.target.value)}
           placeholder="Width"
-          className="border p-2 rounded w-full"
-          min="5"
-          max="25"
+          inputProps={{
+            min: MIN_DIMENSION,
+            max: MAX_DIMENSION,
+          }}
+          className="w-full"
         />
-        <input
+        <Input
           type="number"
           value={height}
           onChange={(e) => setHeight(e.target.value)}
           placeholder="Height"
-          className="border p-2 rounded w-full"
-          min="5"
-          max="25"
+          inputProps={{
+            min: MIN_DIMENSION,
+            max: MAX_DIMENSION,
+          }}
+          className="w-full"
         />
       </Box>
-      <Text variant="h2" className="text-center">
+
+      {error && (
+        <Alert
+          severity="error"
+          title="Caution"
+          onClose={() => setError(null)}
+          className="w-full mt-2"
+        >
+          {error}
+        </Alert>
+      )}
+      <Text variant="h5" className="text-center">
         Select Difficulty Level Of Movement
       </Text>
       <Box className="flex w-full gap-2">
-        <select
+        <Selection
           value={difficulty}
-          onChange={(e) => setDifficulty(e.target.value)}
-          className="border p-2 rounded w-full"
-        >
-          <option value={MOVEMENT_DIFFICULTIES.HARD}>Hard (1/2 second)</option>
-          <option value={MOVEMENT_DIFFICULTIES.MEDIUM}>
-            Medium (2/3 second)
-          </option>
-          <option value={MOVEMENT_DIFFICULTIES.EASY}>Easy (1 second)</option>
-        </select>
+          onChange={(e) => setDifficulty(e.target.value as string)}
+          options={difficultyOptions}
+          className="w-full"
+        />
       </Box>
-      <Button type="submit">Start Game</Button>
+      <Button type="submit" variant="primary">
+        Start Game
+      </Button>
     </Box>
   );
 };

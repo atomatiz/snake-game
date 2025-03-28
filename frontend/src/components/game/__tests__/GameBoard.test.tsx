@@ -80,13 +80,16 @@ describe("GameBoard", () => {
       }
     );
 
-    const snakeCell = screen.getByTestId("cell-2-0");
+    const snakeHeadCell = screen.getByTestId("cell-2-0");
+    const snakeBodyCell = screen.getByTestId("cell-1-0");
     const baitCell = screen.getByTestId("cell-8-6");
-    expect(snakeCell).toHaveClass("bg-green-500");
+
+    expect(snakeHeadCell).toHaveClass("bg-green-700");
+    expect(snakeBodyCell).toHaveClass("bg-green-500");
     expect(baitCell).toHaveClass("bg-red-500");
   });
 
-  it("displays game over with Replay and New Game buttons", () => {
+  it("displays Replay and New Game buttons when game is over", () => {
     renderWithProviders(
       <GameBoard
         initialState={gameOverState}
@@ -101,7 +104,6 @@ describe("GameBoard", () => {
       }
     );
 
-    expect(screen.getByText("You lose")).toBeInTheDocument();
     expect(screen.getByText("Replay")).toBeInTheDocument();
     expect(screen.getByText("New Game")).toBeInTheDocument();
   });
