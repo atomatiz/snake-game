@@ -13,6 +13,7 @@ interface GameBoardProps {
   initialState: GameResponse;
   width: number;
   height: number;
+  moveInterval: number;
   setGameState: (state: GameResponse) => void;
   onReplay: () => void;
   onNewGame: () => void;
@@ -22,6 +23,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   initialState,
   width,
   height,
+  moveInterval,
   setGameState,
   onReplay,
   onNewGame,
@@ -61,7 +63,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       return;
     }
 
-    const moveInterval = setInterval(async () => {
+    const moveIntervalId = setInterval(async () => {
       try {
         const newState = await moveSnake(direction, queryClient);
         setLocalGameState(newState);
@@ -70,10 +72,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       } catch (error: unknown) {
         console.error(errorMessage("Move failed:", error));
       }
-    }, 1000);
+    }, moveInterval);
 
-    return () => clearInterval(moveInterval);
-  }, [gameState, direction, queryClient, setGameState]);
+    return () => clearInterval(moveIntervalId);
+  }, [gameState, direction, queryClient, setGameState, moveInterval]);
 
   const renderCell = (x: number, y: number) => {
     const isSnake = gameState.snake.some(

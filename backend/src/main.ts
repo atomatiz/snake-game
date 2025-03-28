@@ -27,7 +27,7 @@ async function bootstrap() {
     app.use((req, res, next) => {
         res.header(
             'Access-Control-Allow-Origin',
-            `${configService.get('SNAKE_GAME_API_URL')}`,
+            `${configService.get('SNAKE_GAME_URL')}`,
         );
         res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
         res.header(
@@ -42,7 +42,7 @@ async function bootstrap() {
 
     app.enableCors({
         origin: (origin, callback) => {
-            if (origin === `${configService.get('SNAKE_GAME_API_URL')}`)
+            if (origin === `${configService.get('SNAKE_GAME_URL')}`)
                 callback(null, true);
         },
         methods: ['GET', 'POST', 'OPTIONS'],

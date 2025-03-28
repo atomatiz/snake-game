@@ -12,13 +12,16 @@ export const GameContainer: React.FC = () => {
   const [gameState, setGameState] = useState<GameResponse | null>(null);
   const [width, setWidth] = useState<number | null>(null);
   const [height, setHeight] = useState<number | null>(null);
+  const [moveInterval, setMoveInterval] = useState<number | null>(null);
+
   const queryClient = useQueryClient();
 
-  const handleStartGame = async (w: number, h: number) => {
+  const handleStartGame = async (w: number, h: number, interval: number) => {
     try {
       const initialState = await startGame(w, h, queryClient);
       setWidth(w);
       setHeight(h);
+      setMoveInterval(interval);
       setGameState(initialState);
     } catch (error: unknown) {
       console.error(errorMessage("Failed to start game:", error));
@@ -26,7 +29,7 @@ export const GameContainer: React.FC = () => {
   };
 
   const handleReplay = async () => {
-    if (width && height) {
+    if (width && height && moveInterval) {
       try {
         const initialState = await startGame(width, height, queryClient);
         setGameState(initialState);
@@ -40,17 +43,19 @@ export const GameContainer: React.FC = () => {
     setGameState(null);
     setWidth(null);
     setHeight(null);
+    setMoveInterval(null);
   };
 
   return (
     <>
       {!gameState ? (
         <GameForm onSubmit={handleStartGame} />
-      ) : width && height ? (
+      ) : width && height && moveInterval ? (
         <GameBoard
           initialState={gameState}
           width={width}
           height={height}
+          moveInterval={moveInterval}
           setGameState={setGameState}
           onReplay={handleReplay}
           onNewGame={handleNewGame}
