@@ -12,7 +12,9 @@ async function bootstrap() {
         logger: logger,
     });
     const configService = app.get(config_1.ConfigService);
-    app.setGlobalPrefix(global_1.API_PREFIX);
+    app.setGlobalPrefix(global_1.API_PREFIX, {
+        exclude: ['/health'],
+    });
     app.useGlobalPipes(new common_1.ValidationPipe({
         transform: true,
         whitelist: true,
