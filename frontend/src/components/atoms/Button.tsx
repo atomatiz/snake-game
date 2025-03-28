@@ -1,39 +1,83 @@
-import React from "react";
+"use client";
 
-interface ButtonProps {
-  onClick?: () => void;
-  children: React.ReactNode;
+import React from "react";
+import {
+  Button as MuiButton,
+  ButtonProps as MuiButtonProps,
+} from "@mui/material";
+
+type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "danger"
+  | "success"
+  | "warning";
+
+export type ButtonProps = Omit<MuiButtonProps, "variant"> & {
+  variant?: ButtonVariant;
   className?: string;
-  disabled?: boolean;
-  variant?: "primary" | "secondary" | "danger";
-  type?: "button" | "submit" | "reset";
-}
+};
 
 export const Button: React.FC<ButtonProps> = ({
   onClick,
   children,
-  className = "",
-  disabled = false,
   variant = "primary",
-  type = "button",
+  className = "",
+  ...props
 }) => {
-  const baseStyles = "px-4 py-2 rounded focus:outline-none";
-  const variantStyles = {
-    primary: "bg-blue-500 text-white hover:bg-blue-600",
-    secondary: "bg-gray-500 text-white hover:bg-gray-600",
-    danger: "bg-red-500 text-white hover:bg-red-600",
+  const getMuiProps = () => {
+    switch (variant) {
+      case "primary":
+        return { variant: "contained", color: "primary" };
+      case "secondary":
+        return { variant: "contained", color: "secondary" };
+      case "danger":
+        return { variant: "contained", color: "error" };
+      case "success":
+        return { variant: "contained", color: "success" };
+      case "warning":
+        return { variant: "contained", color: "warning" };
+      default:
+        return { variant: "contained", color: "primary" };
+    }
   };
 
+  const getVariantClasses = () => {
+    switch (variant) {
+      case "primary":
+        return "bg-blue-500 text-white hover:bg-blue-600";
+      case "secondary":
+        return "bg-gray-500 text-white hover:bg-gray-600";
+      case "danger":
+        return "bg-red-500 text-white hover:bg-red-600";
+      case "success":
+        return "bg-green-500 text-white hover:bg-green-600";
+      case "warning":
+        return "bg-yellow-500 text-white hover:bg-yellow-600";
+      default:
+        return "bg-blue-500 text-white hover:bg-blue-600";
+    }
+  };
+
+  const muiProps = getMuiProps();
+  const variantClasses = getVariantClasses();
+
   return (
-    <button
+    <MuiButton
       onClick={onClick}
-      type={type}
-      className={`${baseStyles} ${variantStyles[variant]} ${className} ${
-        disabled ? "opacity-50 cursor-not-allowed" : ""
-      }`}
-      disabled={disabled}
+      variant={muiProps.variant as "contained"}
+      color={
+        muiProps.color as
+          | "primary"
+          | "secondary"
+          | "error"
+          | "success"
+          | "warning"
+      }
+      className={`px-4 py-2 rounded focus:outline-none ${variantClasses} ${className}`}
+      {...props}
     >
       {children}
-    </button>
+    </MuiButton>
   );
 };
