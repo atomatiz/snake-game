@@ -8,6 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { cn } from "@/common/utils/tailwind.util";
 
 export type AlertProps = MuiAlertProps & {
   title?: string;
@@ -24,7 +25,7 @@ export const Alert: React.FC<AlertProps> = ({
 }) => {
   return (
     <MuiAlert
-      className={`rounded border ${className || ''}`}
+      className={cn("rounded border", className)}
       {...props}
       action={
         onClose ? (

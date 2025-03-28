@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Typography, TypographyProps } from "@mui/material";
+import { cn } from "@/common/utils/tailwind.util";
 
 export type TextVariant =
   | "h1"
@@ -26,8 +27,6 @@ export const Text: React.FC<TextProps> = ({
   className = "",
   ...props
 }) => {
-  // Use useId to ensure consistent rendering between server and client
-  const id = React.useId();
   const getMuiVariant = (): TypographyProps["variant"] => {
     switch (variant) {
       case "h1":
@@ -97,17 +96,15 @@ export const Text: React.FC<TextProps> = ({
     }
   };
 
-  // Ensure consistent component rendering by using the same component on server and client
   const muiVariant = getMuiVariant();
   const componentType = getComponent();
   const baseStyles = getBaseStyles();
-  
+
   return (
     <Typography
-      key={id}
       variant={muiVariant}
       component={componentType}
-      className={`${baseStyles} ${className}`}
+      className={cn(baseStyles, className)}
       {...props}
     >
       {children}

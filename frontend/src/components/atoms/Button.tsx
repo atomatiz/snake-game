@@ -5,13 +5,9 @@ import {
   Button as MuiButton,
   ButtonProps as MuiButtonProps,
 } from "@mui/material";
+import { cn } from "@/common/utils/tailwind.util";
 
-type ButtonVariant =
-  | "primary"
-  | "secondary"
-  | "danger"
-  | "success"
-  | "warning";
+type ButtonVariant = "primary" | "secondary" | "danger" | "success" | "warning";
 
 export type ButtonProps = Omit<MuiButtonProps, "variant"> & {
   variant?: ButtonVariant;
@@ -74,7 +70,11 @@ export const Button: React.FC<ButtonProps> = ({
           | "success"
           | "warning"
       }
-      className={`px-4 py-2 rounded focus:outline-none ${variantClasses} ${className}`}
+      className={cn(
+        "px-4 py-2 rounded focus:outline-none",
+        variantClasses,
+        className
+      )}
       {...props}
     >
       {children}

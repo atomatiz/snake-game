@@ -9,6 +9,7 @@ import {
   SelectProps as MuiSelectProps,
   FormHelperText,
 } from "@mui/material";
+import { cn } from "@/common/utils/tailwind.util";
 
 export type SelectionProps = Omit<MuiSelectProps, "variant"> & {
   label?: string;
@@ -30,18 +31,16 @@ export const Selection: React.FC<SelectionProps> = ({
   className,
   ...props
 }) => {
-  const labelId =
-    `${id}-label` ||
-    `select-label-${Math.random().toString(36).substring(2, 9)}`;
+  const labelId = id ? `${id}-label` : "select-label";
 
   return (
-    <FormControl error={error} size="small" className={className}>
+    <FormControl error={error} size="small" className={cn(className)}>
       {label && <InputLabel id={labelId}>{label}</InputLabel>}
       <MuiSelect
         labelId={labelId}
         id={id}
         label={label}
-        className="border rounded p-2"
+        className={cn("border rounded p-2")}
         {...props}
       >
         {options.map((option) => (

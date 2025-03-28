@@ -1,3 +1,5 @@
+"use client";
+
 import { Text } from "@/components/atoms/Text";
 import { GameContainer } from "@/containers/GameContainer";
 import "../styles/global.css";
