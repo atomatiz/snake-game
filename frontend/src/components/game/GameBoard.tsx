@@ -139,6 +139,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
   const board = Array.from({ length: height }, (_, y) => renderRow(y));
 
+  const handleReplay = () => {
+    setDirection(undefined);
+    setLastDirection(undefined);
+    setGameStarted(false);
+    setIsMoving(false);
+    onReplay();
+  };
+
   return (
     <Box className="flex flex-col items-center">
       <Box className="flex flex-col">{board}</Box>
@@ -147,17 +155,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           <Text variant="h2" className="text-red-600">
             {gameState.board || "Game Over"}
           </Text>
-          <Button
-            onClick={() => {
-              setDirection(undefined);
-              setLastDirection(undefined);
-              setGameStarted(false);
-              setIsMoving(false);
-              onReplay();
-            }}
-          >
-            Replay
-          </Button>
+          <Button onClick={handleReplay}>Replay</Button>
           <Button onClick={onNewGame}>New Game</Button>
         </Box>
       ) : (
