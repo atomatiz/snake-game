@@ -14,7 +14,9 @@ async function bootstrap() {
 
     const configService = app.get(ConfigService);
 
-    app.setGlobalPrefix(API_PREFIX);
+    app.setGlobalPrefix(API_PREFIX, {
+        exclude: ['/health'],
+    });
 
     app.useGlobalPipes(
         new ValidationPipe({
