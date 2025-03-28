@@ -136,6 +136,9 @@ npm run build or yarn build
 # Run in development mode
 npm run dev or yarn dev
 
+# Run tests
+npm run test or yarn test
+
 # Build for production
 npm run build or yarn build
 
