@@ -1,7 +1,7 @@
 import { screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { GameContainer } from "../GameContainer";
 import * as gameApi from "@/api/gameApi";
-import { renderWithProviders } from "@/common/utils/test-utils";
+import { renderWithProviders } from "@/common/utils/test.utils";
 
 const createInitialPreloadedState = () => ({
   game: {
@@ -91,7 +91,7 @@ describe("GameContainer", () => {
     await act(async () => {
       fireEvent.click(screen.getByText("Start"));
     });
-    
+
     await waitFor(
       () => {
         expect(screen.getByTestId("game-board")).toBeInTheDocument();
@@ -120,7 +120,7 @@ describe("GameContainer", () => {
     await act(async () => {
       fireEvent.click(screen.getByText("Start"));
     });
-    
+
     await waitFor(
       () => {
         expect(screen.getByTestId("game-board")).toBeInTheDocument();
@@ -131,7 +131,7 @@ describe("GameContainer", () => {
     await act(async () => {
       fireEvent.click(screen.getByText("Replay"));
     });
-    
+
     expect(gameApi.startGame).toHaveBeenCalledWith(
       10,
       10,
@@ -155,7 +155,7 @@ describe("GameContainer", () => {
     await act(async () => {
       fireEvent.click(screen.getByText("Start"));
     });
-    
+
     await waitFor(
       () => {
         expect(screen.getByTestId("game-board")).toBeInTheDocument();
@@ -166,7 +166,7 @@ describe("GameContainer", () => {
     await act(async () => {
       fireEvent.click(screen.getByText("New Game"));
     });
-    
+
     expect(screen.getByTestId("width-input")).toBeInTheDocument();
   });
 });

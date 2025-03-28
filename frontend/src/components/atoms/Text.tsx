@@ -3,6 +3,7 @@
 import React from "react";
 import { Typography, TypographyProps } from "@mui/material";
 import { cn } from "@/common/utils/tailwind.util";
+import { Nullable } from "@/common/types/global.types";
 
 export type TextVariant =
   | "h1"
@@ -15,8 +16,8 @@ export type TextVariant =
   | "span";
 
 export type TextProps = Omit<TypographyProps, "variant"> & {
-  variant?: TextVariant;
-  component?: React.ElementType;
+  variant?: Nullable<TextVariant>;
+  component?: Nullable<React.ElementType>;
   className?: string;
 };
 

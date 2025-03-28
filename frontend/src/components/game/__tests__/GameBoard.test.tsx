@@ -2,7 +2,7 @@ import { screen, fireEvent } from "@testing-library/react";
 import { GameResponse } from "@/common/types/game.types";
 import { GameBoard } from "../GameBoard";
 import { MOVEMENT_DIFFICULTIES } from "@/common/constants/game.constants";
-import { renderWithProviders } from "@/common/utils/test-utils";
+import { renderWithProviders } from "@/common/utils/test.utils";
 
 const createPreloadedState = (
   gameData: GameResponse,
