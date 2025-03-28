@@ -142,13 +142,22 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   return (
     <Box className="flex flex-col items-center">
       <Box className="flex flex-col">{board}</Box>
-      {gameState.gameOver && (
+      {gameState.gameOver ? (
         <Box className="mt-4 flex flex-col items-center gap-2">
           <Text variant="h2" className="text-red-600">
             {gameState.board || "Game Over"}
           </Text>
           <Button onClick={onReplay}>Replay</Button>
           <Button onClick={onNewGame}>New Game</Button>
+        </Box>
+      ) : (
+        <Box className="mt-4 flex flex-col items-center gap-2">
+          <Button
+            onClick={onNewGame}
+            className="bg-red-600 text-white hover:bg-red-700"
+          >
+            Exit Game
+          </Button>
         </Box>
       )}
     </Box>
