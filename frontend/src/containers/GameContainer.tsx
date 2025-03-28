@@ -49,15 +49,11 @@ export const GameContainer: React.FC = () => {
 
   return (
     <>
-      {!gameState ? (
+      {!gameState || !width || !height || !moveInterval ? (
         <GameForm onSubmit={handleStartGame} />
-      ) : width && height && moveInterval ? (
+      ) : (
         <>
-          <GameInfo 
-            width={width} 
-            height={height} 
-            moveInterval={moveInterval} 
-          />
+          <GameInfo width={width} height={height} moveInterval={moveInterval} />
           <GameBoard
             initialState={gameState}
             width={width}
@@ -68,7 +64,7 @@ export const GameContainer: React.FC = () => {
             onNewGame={handleNewGame}
           />
         </>
-      ) : null}
+      )}
     </>
   );
 };
