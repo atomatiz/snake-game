@@ -96,7 +96,7 @@ snake-game/
    npm run dev or yarn dev
    ```
    - Open http://localhost:3000 in your browser to play the game
-   - The port is configurable in `src/package.json`
+   - The port is configurable in `src/package.json` -> scripts or `.env*`
 
 ## Game Instructions
 
