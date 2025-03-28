@@ -128,6 +128,9 @@ npm run test or yarn test
 
 # Build for production
 npm run build or yarn build
+
+# Start production build
+npm run start or yarn start
 ```
 
 ### Frontend
