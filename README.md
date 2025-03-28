@@ -88,9 +88,9 @@ Snake Game is a web-based implementation of the classic Snake game where players
 5. Eat bait to grow the snake and increase its length
 6. Avoid collisions with walls and the snake's body
 7. Completely fill the matrix with the snake's body to win
-8. Use the replay button to start a new game with the same dimensions and difficulty level of movement
-9. Use the new game button to change board dimensions and difficulty level of movement
-10. Click the Exit button to exit the game and return to the main page
+8. Click the Replay button to start a new game with the same dimensions and difficulty level of movement
+9. Click the New Game button to change board dimensions and difficulty level of movement
+10. Click the Exit Game button to exit the game and return to the main page
 
 ## API Endpoints
 
