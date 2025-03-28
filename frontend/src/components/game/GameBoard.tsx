@@ -30,6 +30,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 }) => {
   const [gameState, setLocalGameState] = useState<GameResponse>(initialState);
   const [direction, setDirection] = useState<Direction | undefined>(undefined);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [isMoving, setIsMoving] = useState(false);
+  const [lastDirection, setLastDirection] = useState<Direction | undefined>(
+    undefined
+  );
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -58,11 +63,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, []);
 
-  const [gameStarted, setGameStarted] = useState(false);
-  const [lastDirection, setLastDirection] = useState<Direction | undefined>(
-    undefined
-  );
-
   useEffect(() => {
     if (direction) {
       setLastDirection(direction);
@@ -79,8 +79,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       return;
     }
 
-    const moveIntervalId = setInterval(async () => {
+    const handleMove = async () => {
+      if (isMoving) return;
+
       try {
+        setIsMoving(true);
         const directionToUse = direction || lastDirection;
         if (directionToUse) {
           const newState = await moveSnake(directionToUse, queryClient);
@@ -90,8 +93,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
       } catch (error: unknown) {
         console.error(errorMessage("Move failed:", error));
+      } finally {
+        setIsMoving(false);
       }
-    }, moveInterval);
+    };
+
+    const moveIntervalId = setInterval(handleMove, moveInterval);
 
     return () => clearInterval(moveIntervalId);
   }, [
@@ -102,6 +109,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     setGameState,
     moveInterval,
     gameStarted,
+    isMoving,
   ]);
 
   const renderCell = (x: number, y: number) => {
