@@ -20,7 +20,6 @@ interface GameBoardProps {
   width: number;
   height: number;
   moveInterval: number;
-  setGameState: (state: GameResponse) => void;
   onReplay: () => void;
   onNewGame: () => void;
 }

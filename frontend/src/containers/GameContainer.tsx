@@ -40,7 +40,6 @@ export const GameContainer: React.FC = () => {
             width={width}
             height={height}
             moveInterval={moveInterval}
-            setGameState={() => {}}
             onReplay={handleReplay}
             onNewGame={handleNewGame}
           />
