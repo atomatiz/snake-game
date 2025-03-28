@@ -98,6 +98,7 @@ Snake Game is a web-based implementation of the classic Snake game where players
 
 ## API Endpoints
 
+- `GET /health` - Health check
 - `POST /v1/api/game/start` - Start a new game with specified dimensions
 - `POST /v1/api/game/move` - Move the snake in a specified direction
 
@@ -113,6 +114,7 @@ npm run start:dev or yarn start:dev
 
 # Run tests
 npm run test or yarn test
+npm run test:e2e or yarn test:e2e
 
 # Build for production
 npm run build or yarn build
@@ -129,6 +131,7 @@ npm run dev or yarn dev
 
 # Run tests
 npm run test or yarn test
+npm run test:e2e or yarn test:e2e
 
 # Build for production
 npm run build or yarn build

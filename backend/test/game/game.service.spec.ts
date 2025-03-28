@@ -24,7 +24,7 @@ describe('GameService', () => {
         it('should throw an error if width is greater than MAX_DIMENSION', () => {
             expect(() =>
                 service.start(MAX_DIMENSION + 1, MAX_DIMENSION),
-            ).toThrow('Width and Height must be less than 25');
+            ).toThrow('Width and Height must be at most 25');
         });
 
         it('should throw an error if height is less than MIN_DIMENSION', () => {
@@ -36,7 +36,7 @@ describe('GameService', () => {
         it('should throw an error if height is greater than MAX_DIMENSION', () => {
             expect(() =>
                 service.start(MAX_DIMENSION, MAX_DIMENSION + 1),
-            ).toThrow('Width and Height must be less than 25');
+            ).toThrow('Width and Height must be at most 25');
         });
 
         it('should initialize the game with correct values', () => {

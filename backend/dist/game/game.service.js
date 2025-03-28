@@ -17,11 +17,11 @@ let GameService = class GameService {
     direction = 'right';
     gameOver = true;
     start(width, height) {
-        if (width < constants_1.MIN_DIMENSION ||
-            height < constants_1.MIN_DIMENSION ||
-            width > constants_1.MAX_DIMENSION ||
-            height > constants_1.MAX_DIMENSION) {
-            throw new Error('Width and Height must be at least 5 and maximum 25');
+        if (width < constants_1.MIN_DIMENSION || height < constants_1.MIN_DIMENSION) {
+            throw new Error('Width and Height must be at least 5');
+        }
+        if (width > constants_1.MAX_DIMENSION || height > constants_1.MAX_DIMENSION) {
+            throw new Error('Width and Height must be at most 25');
         }
         this.width = width;
         this.height = height;
