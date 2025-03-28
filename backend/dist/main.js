@@ -19,7 +19,7 @@ async function bootstrap() {
         forbidNonWhitelisted: true,
     }));
     app.use((req, res, next) => {
-        res.header('Access-Control-Allow-Origin', `${configService.get('SNAKE_GAME_API_URL')}`);
+        res.header('Access-Control-Allow-Origin', `${configService.get('SNAKE_GAME_URL')}`);
         res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
         res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,Accept');
         if (req.method === 'OPTIONS') {
@@ -29,7 +29,7 @@ async function bootstrap() {
     });
     app.enableCors({
         origin: (origin, callback) => {
-            if (origin === `${configService.get('SNAKE_GAME_API_URL')}`)
+            if (origin === `${configService.get('SNAKE_GAME_URL')}`)
                 callback(null, true);
         },
         methods: ['GET', 'POST', 'OPTIONS'],
