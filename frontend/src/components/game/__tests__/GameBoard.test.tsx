@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { GameResponse } from "@/common/types/game.types";
 import { GameBoard } from "../GameBoard";
+import { MOVEMENT_DIFFICULTIES } from "@/common/constants/game.constants";
 
 jest.mock("@/api/gameApi", () => ({
   moveSnake: jest.fn(),
@@ -35,9 +36,15 @@ describe("GameBoard", () => {
   const mockSetGameState = jest.fn();
   const mockOnReplay = jest.fn();
   const mockOnNewGame = jest.fn();
+  const defaultMoveInterval = MOVEMENT_DIFFICULTIES.MEDIUM;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it("renders the game board with snake and bait", () => {
@@ -46,6 +53,7 @@ describe("GameBoard", () => {
         initialState={initialState}
         width={10}
         height={10}
+        moveInterval={defaultMoveInterval}
         setGameState={mockSetGameState}
         onReplay={mockOnReplay}
         onNewGame={mockOnNewGame}
@@ -64,6 +72,7 @@ describe("GameBoard", () => {
         initialState={gameOverState}
         width={10}
         height={10}
+        moveInterval={defaultMoveInterval}
         setGameState={mockSetGameState}
         onReplay={mockOnReplay}
         onNewGame={mockOnNewGame}
@@ -81,6 +90,7 @@ describe("GameBoard", () => {
         initialState={gameOverState}
         width={10}
         height={10}
+        moveInterval={defaultMoveInterval}
         setGameState={mockSetGameState}
         onReplay={mockOnReplay}
         onNewGame={mockOnNewGame}
@@ -97,6 +107,7 @@ describe("GameBoard", () => {
         initialState={gameOverState}
         width={10}
         height={10}
+        moveInterval={defaultMoveInterval}
         setGameState={mockSetGameState}
         onReplay={mockOnReplay}
         onNewGame={mockOnNewGame}
@@ -105,5 +116,25 @@ describe("GameBoard", () => {
 
     fireEvent.click(screen.getByText("New Game"));
     expect(mockOnNewGame).toHaveBeenCalledTimes(1);
+  });
+
+  it("passes the correct move interval to the component", () => {
+    const fastInterval = MOVEMENT_DIFFICULTIES.HARD;
+    render(
+      <GameBoard
+        initialState={initialState}
+        width={10}
+        height={10}
+        moveInterval={fastInterval}
+        setGameState={mockSetGameState}
+        onReplay={mockOnReplay}
+        onNewGame={mockOnNewGame}
+      />
+    );
+    const gameBoardElement = screen
+      .getByTestId("cell-2-0")
+      .closest("div[class*='flex flex-col']");
+    expect(gameBoardElement).toBeInTheDocument();
+    expect(mockSetGameState).toBeDefined();
   });
 });

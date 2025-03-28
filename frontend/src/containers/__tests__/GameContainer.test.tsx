@@ -3,11 +3,11 @@ import { GameContainer } from "../GameContainer";
 import * as gameApi from "@/api/gameApi";
 
 jest.mock("@/components/game/GameForm", () => ({
-  GameForm: ({ onSubmit }: { onSubmit: (w: number, h: number) => void }) => (
+  GameForm: ({ onSubmit }: { onSubmit: (w: number, h: number, interval: number) => void }) => (
     <div>
       <input data-testid="width-input" />
       <input data-testid="height-input" />
-      <button onClick={() => onSubmit(10, 10)}>Start</button>
+      <button onClick={() => onSubmit(10, 10, 1000)}>Start</button>
     </div>
   ),
 }));
@@ -15,11 +15,13 @@ jest.mock("@/components/game/GameBoard", () => ({
   GameBoard: ({
     onReplay,
     onNewGame,
+    moveInterval,
   }: {
     onReplay: () => void;
     onNewGame: () => void;
+    moveInterval: number;
   }) => (
-    <div>
+    <div data-testid="game-board" data-move-interval={moveInterval}>
       <button onClick={onReplay}>Replay</button>
       <button onClick={onNewGame}>New Game</button>
     </div>
@@ -27,7 +29,13 @@ jest.mock("@/components/game/GameBoard", () => ({
 }));
 
 jest.mock("@/api/gameApi", () => ({
-  startGame: jest.fn(),
+  startGame: jest.fn().mockImplementation(() => {
+    return Promise.resolve({
+      snake: [{ x: 2, y: 0 }],
+      bait: { x: 8, y: 6 },
+      gameOver: false,
+    });
+  }),
 }));
 
 jest.mock("@tanstack/react-query", () => ({
