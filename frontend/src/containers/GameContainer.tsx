@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { GameBoard } from "@/components/game/GameBoard";
 import { GameForm } from "@/components/game/GameForm";
+import { GameInfo } from "@/components/game/GameInfo";
 import { startGame } from "@/api/gameApi";
 import { GameResponse } from "@/common/types/game.types";
 import { errorMessage } from "@/common/utils/error-message.util";
@@ -51,15 +52,22 @@ export const GameContainer: React.FC = () => {
       {!gameState ? (
         <GameForm onSubmit={handleStartGame} />
       ) : width && height && moveInterval ? (
-        <GameBoard
-          initialState={gameState}
-          width={width}
-          height={height}
-          moveInterval={moveInterval}
-          setGameState={setGameState}
-          onReplay={handleReplay}
-          onNewGame={handleNewGame}
-        />
+        <>
+          <GameInfo 
+            width={width} 
+            height={height} 
+            moveInterval={moveInterval} 
+          />
+          <GameBoard
+            initialState={gameState}
+            width={width}
+            height={height}
+            moveInterval={moveInterval}
+            setGameState={setGameState}
+            onReplay={handleReplay}
+            onNewGame={handleNewGame}
+          />
+        </>
       ) : null}
     </>
   );
