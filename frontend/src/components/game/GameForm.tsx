@@ -50,6 +50,7 @@ export const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
           placeholder="Width"
           className="border p-2 rounded"
           min="5"
+          max="25"
         />
         <input
           type="number"
@@ -58,6 +59,7 @@ export const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
           placeholder="Height"
           className="border p-2 rounded"
           min="5"
+          max="25"
         />
       </Box>
       <Button type="submit">Start Game</Button>
