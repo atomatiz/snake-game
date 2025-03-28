@@ -28,27 +28,6 @@ Snake Game is a web-based implementation of the classic Snake game where players
 - [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript
 - [Swagger](https://swagger.io/) - API documentation
 
-## Project Structure
-
-```
-snake-game/
-├── frontend/           # Next.js frontend application
-│   ├── src/            # Source code
-│   │   ├── api/        # API client
-│   │   ├── app/        # Next.js app directory
-│   │   ├── components/ # React components
-│   │   ├── containers/ # Container components
-│   │   └── common/     # Shared utilities, types, and constants
-│   └── ...
-├── backend/            # NestJS backend application
-│   ├── src/            # Source code
-│   │   ├── game/       # Game module with controllers and services
-│   │   ├── common/     # Shared utilities and constants
-│   │   └── ...
-│   └── ...
-└── ...
-```
-
 ## Getting Started
 
 ### Prerequisites
