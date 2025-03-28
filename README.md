@@ -82,13 +82,15 @@ Snake Game is a web-based implementation of the classic Snake game where players
 ## Game Instructions
 
 1. Set the board dimensions (width and height) and select movement difficulty level to start a new game
-2. Get started to make the snake's first move by hitting the direction button such as right, down
-3. Control the snake using arrow keys such as up, down, left, and right
-4. Eat bait to grow the snake and increase its length
-5. Avoid collisions with walls and the snake's body
-6. Completely fill the matrix with the snake's body to win
-7. Use the replay button to start a new game with the same dimensions
-8. Use the new game button to change board dimensions
+2. Click the Start Game button to start the game
+3. Get started to make the snake's first move by hitting the direction button such as right, down
+4. Control the snake using arrow keys such as up, down, left, and right
+5. Eat bait to grow the snake and increase its length
+6. Avoid collisions with walls and the snake's body
+7. Completely fill the matrix with the snake's body to win
+8. Use the replay button to start a new game with the same dimensions and difficulty level of movement
+9. Use the new game button to change board dimensions and difficulty level of movement
+10. Click the Exit button to exit the game and return to the main page
 
 ## API Endpoints
 
