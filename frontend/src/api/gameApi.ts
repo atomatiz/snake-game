@@ -37,21 +37,41 @@ export const moveSnake = (
   queryClient: QueryClient
 ): Promise<GameResponse> => {
   return queryClient.fetchQuery({
-    queryKey: ["moveSnake", direction, Date.now()],
+    // Remove Date.now() from queryKey to enable better caching
+    // This prevents unnecessary API calls with the same direction
+    queryKey: ["moveSnake", direction],
+    // Set a short staleTime to improve performance while maintaining data freshness
+    staleTime: 100, // 100ms stale time
+    // Add retry logic for better resilience
+    retry: 1,
+    retryDelay: 300,
     queryFn: async () => {
-      const response = await fetch(`${BASE_URL}/game/move`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ direction }),
-      });
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+        
+        const response = await fetch(`${BASE_URL}/game/move`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ direction }),
+          signal: controller.signal,
+        });
+        
+        clearTimeout(timeoutId);
 
-      if (!response.ok) {
-        throw new Error(`Failed to move snake: ${response.statusText}`);
+        if (!response.ok) {
+          throw new Error(`Failed to move snake: ${response.statusText}`);
+        }
+
+        return response.json();
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          throw new Error('Request timed out. Please check your connection.');
+        }
+        throw error;
       }
-
-      return response.json();
     },
   });
 };
