@@ -3,6 +3,7 @@ export const BASE_URL =
 
 export const MIN_DIMENSION = 5;
 export const MAX_DIMENSION = 25;
+export const MIN_API_CALL_INTERVAL = 50;
 
 export const MOVEMENT_DIFFICULTIES = {
   HARD: 500,
