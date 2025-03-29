@@ -8,6 +8,7 @@ export interface GameState {
   moveInterval: Nullable<number>;
   direction: Nullable<Direction>;
   lastDirection: Nullable<Direction>;
+  nextDirection: Nullable<Direction>;
   gameStarted: boolean;
   isMoving: boolean;
   loading: boolean;
