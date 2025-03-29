@@ -13,8 +13,10 @@ export const GameContainer: React.FC = () => {
     (state) => state.game
   );
 
-  const handleStartGame = (w: number, h: number, interval: number) => {
-    dispatch(startGameAsync({ width: w, height: h, moveInterval: interval }));
+  const handleStartGame = async (w: number, h: number, interval: number) => {
+    await dispatch(
+      startGameAsync({ width: w, height: h, moveInterval: interval })
+    );
   };
 
   const handleReplay = async () => {
