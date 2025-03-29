@@ -41,7 +41,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
   useEffect(() => {
     let lastKeyPressTime = 0;
-    const keyDebounceTime = 150;
+    const keyDebounceTime = 50;
 
     const handleKeyPress = (event: KeyboardEvent) => {
       if (
