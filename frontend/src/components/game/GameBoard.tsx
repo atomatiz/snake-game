@@ -39,11 +39,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     isMoving,
   } = useAppSelector((state) => state.game);
 
-  const lastKeyPressTimeRef = React.useRef(0);
-  const pendingDirectionRef = React.useRef<Direction | null>(null);
-  const keyDebounceTime = 80;
-
   useEffect(() => {
+    let lastKeyPressTime = 0;
+    const keyDebounceTime = 150;
+
     const handleKeyPress = (event: KeyboardEvent) => {
       if (
         ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)
@@ -51,11 +50,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         event.preventDefault();
         const now = Date.now();
 
-        if (now - lastKeyPressTimeRef.current < keyDebounceTime) {
+        if (now - lastKeyPressTime < keyDebounceTime) {
           return;
         }
 
-        lastKeyPressTimeRef.current = now;
+        lastKeyPressTime = now;
 
         if (!gameState || gameState.gameOver || isMoving) {
           return;
@@ -90,11 +89,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           return;
         }
 
-        if (pendingDirectionRef.current === newDirection) {
-          return;
-        }
-
-        pendingDirectionRef.current = newDirection;
         dispatch(changeDirection(newDirection));
       }
     };

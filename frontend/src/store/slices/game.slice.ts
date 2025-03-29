@@ -8,7 +8,6 @@ import {
 import { errorMessage } from "@/common/utils/error-message.util";
 import { QueryClient } from "@tanstack/react-query";
 import { AppDispatch } from "../index";
-import { MIN_API_CALL_INTERVAL } from "@/common/constants/game.constants";
 
 const initialState: GameState = {
   gameData: null,
@@ -52,23 +51,12 @@ export const startGameAsync = createAsyncThunk<
   }
 );
 
-let lastApiCallTime = 0;
-
 export const moveSnakeAsync = createAsyncThunk<
   GameResponse,
   Direction,
   ThunkAPI
 >("game/moveSnake", async (direction, { extra, rejectWithValue }) => {
   try {
-    const now = Date.now();
-    if (now - lastApiCallTime < MIN_API_CALL_INTERVAL) {
-      await new Promise((resolve) =>
-        setTimeout(resolve, MIN_API_CALL_INTERVAL - (now - lastApiCallTime))
-      );
-    }
-
-    lastApiCallTime = Date.now();
-
     const gameData = await apiMoveSnake(direction, extra.queryClient);
     return gameData;
   } catch (error: unknown) {
