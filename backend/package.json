@@ -1,6 +1,6 @@
 {
     "name": "snake-game-backend",
-    "version": "0.0.1",
+    "version": "1.0.4-alpha",
     "description": "Snake Game backend powered by NestJS.",
     "author": "Atomatiz",
     "private": true,
