@@ -11,6 +11,7 @@ import {
   setGameStarted,
   setIsMoving,
   setDirection,
+  setNextDirection,
 } from "@/store/slices/game.slice";
 import { GameResponse } from "@/common/types/game.types";
 
@@ -35,13 +36,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     gameData: gameState,
     direction,
     lastDirection,
+    nextDirection,
     gameStarted,
     isMoving,
   } = useAppSelector((state) => state.game);
 
   useEffect(() => {
     let lastKeyPressTime = 0;
-    const keyDebounceTime = 50;
+    const keyDebounceTime = 120;
 
     const handleKeyPress = (event: KeyboardEvent) => {
       if (
@@ -121,11 +123,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         await new Promise((resolve) => setTimeout(resolve, 50));
       }
 
-      const directionToUse = direction || lastDirection;
+      const directionToUse = nextDirection || direction || lastDirection;
+
       if (directionToUse) {
         dispatch(setIsMoving(true));
         try {
           await dispatch(moveSnakeAsync(directionToUse));
+          if (nextDirection) {
+            dispatch(setDirection(nextDirection));
+            dispatch(setNextDirection(undefined));
+          }
         } finally {
           dispatch(setIsMoving(false));
         }
@@ -141,6 +148,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     gameStarted,
     isMoving,
     direction,
+    nextDirection,
     dispatch,
   ]);
 

@@ -16,6 +16,7 @@ const initialState: GameState = {
   moveInterval: null,
   direction: undefined,
   lastDirection: undefined,
+  nextDirection: undefined,
   gameStarted: false,
   isMoving: false,
   loading: false,
@@ -75,6 +76,9 @@ const gameSlice = createSlice({
     },
     setLastDirection(state, action: PayloadAction<Direction | undefined>) {
       state.lastDirection = action.payload;
+    },
+    setNextDirection(state, action: PayloadAction<Direction | undefined>) {
+      state.nextDirection = action.payload;
     },
     setGameStarted(state, action: PayloadAction<boolean>) {
       state.gameStarted = action.payload;
@@ -136,6 +140,7 @@ const gameSlice = createSlice({
 export const {
   setDirection,
   setLastDirection,
+  setNextDirection,
   setGameStarted,
   setIsMoving,
   resetGame,
@@ -150,6 +155,7 @@ export const changeDirection = (direction: Direction) => {
       direction: currentDirection,
       lastDirection,
       gameData,
+      isMoving,
     } = getState().game;
 
     if (gameData?.gameOver) {
@@ -170,6 +176,10 @@ export const changeDirection = (direction: Direction) => {
       return;
     }
 
-    dispatch(setDirection(direction));
+    if (isMoving) {
+      dispatch(setNextDirection(direction));
+    } else {
+      dispatch(setDirection(direction));
+    }
   };
 };
